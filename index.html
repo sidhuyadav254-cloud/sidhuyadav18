@@ -1,0 +1,2669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#060b16" />
+<title>Panchayat Weather AI — Farmer Friendly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   PANCHAYAT WEATHER AI · SIH26074
+   Profile-First · Top Nav · Auto-Voice · AI Week Guard
+   ============================================================ */
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --bg:#060b16;
+  --card:rgba(255,255,255,.06);
+  --card-2:rgba(255,255,255,.10);
+  --brd:rgba(255,255,255,.12);
+  --txt:#eef3ff;
+  --muted:#9fb0cf;
+  --green:#22c55e;
+  --blue:#38bdf8;
+  --amber:#fbbf24;
+  --red:#fb7185;
+  --purple:#a78bfa;
+  --pink:#f472b6;
+  --r:22px;
+  --shadow:0 20px 44px -20px rgba(0,0,0,.8);
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:'Outfit','Noto Sans Devanagari','Noto Sans Telugu',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--txt);
+  min-height:100vh;
+  overflow-x:hidden;
+  font-size:17px;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.55;
+}
+
+/* ---------- Ambient background ---------- */
+.bg-orbs{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.42;animation:orbFloat 24s ease-in-out infinite}
+.orb.o1{width:520px;height:520px;background:#16a34a;top:-160px;left:-120px}
+.orb.o2{width:460px;height:460px;background:#0284c7;bottom:-180px;right:-120px;animation-delay:-6s}
+.orb.o3{width:380px;height:380px;background:#7c3aed;top:45%;left:55%;animation-delay:-12s;opacity:.26}
+.orb.o4{width:300px;height:300px;background:#f59e0b;bottom:20%;left:5%;animation-delay:-3s;opacity:.18}
+@keyframes orbFloat{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(60px,-50px) scale(1.12)}
+  66%{transform:translate(-50px,40px) scale(.94)}
+}
+
+.bg-particles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.bg-particles span{
+  position:absolute;width:4px;height:4px;border-radius:50%;
+  background:rgba(56,189,248,.5);
+  box-shadow:0 0 8px rgba(56,189,248,.8);
+  animation:particleFloat 18s linear infinite;
+}
+.bg-particles span:nth-child(1){left:10%;animation-delay:0s;background:rgba(34,197,94,.6)}
+.bg-particles span:nth-child(2){left:25%;animation-delay:-3s;background:rgba(56,189,248,.6)}
+.bg-particles span:nth-child(3){left:40%;animation-delay:-6s;background:rgba(167,139,250,.6)}
+.bg-particles span:nth-child(4){left:55%;animation-delay:-9s}
+.bg-particles span:nth-child(5){left:70%;animation-delay:-12s;background:rgba(251,191,36,.6)}
+.bg-particles span:nth-child(6){left:85%;animation-delay:-15s;background:rgba(34,197,94,.6)}
+.bg-particles span:nth-child(7){left:95%;animation-delay:-4s}
+.bg-particles span:nth-child(8){left:5%;animation-delay:-7s;background:rgba(244,114,182,.6)}
+@keyframes particleFloat{
+  0%{transform:translateY(100vh) scale(.5);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-20vh) scale(1.2);opacity:0}
+}
+
+/* ============================================================
+   TOP BAR — brand + voice toggle + profile chip
+   ============================================================ */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;z-index:120;
+  background:rgba(6,11,22,.86);
+  border-bottom:1px solid var(--brd);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+.top-bar-inner{
+  max-width:1200px;margin:0 auto;
+  padding:10px 16px;
+  display:flex;align-items:center;gap:14px;
+}
+.brand{display:flex;align-items:center;gap:10px;flex-shrink:0;cursor:pointer}
+.brand-logo{
+  width:38px;height:38px;border-radius:12px;
+  background:linear-gradient(135deg,var(--green),var(--blue));
+  display:grid;place-items:center;font-size:20px;
+  box-shadow:0 0 20px rgba(34,197,94,.45);
+  animation:logoPulse 3.6s ease-in-out infinite;
+}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 20px rgba(34,197,94,.4)}50%{box-shadow:0 0 34px rgba(56,189,248,.7)}}
+.brand-name{font-size:14px;font-weight:900;letter-spacing:-.2px;line-height:1.1}
+.brand-name small{display:block;font-size:9px;color:var(--muted);letter-spacing:.14em;font-weight:700}
+
+/* Top nav — feature tabs */
+.top-nav{
+  flex:1;display:flex;gap:7px;overflow-x:auto;
+  scrollbar-width:none;-ms-overflow-style:none;
+  padding:4px 0;
+}
+.top-nav::-webkit-scrollbar{display:none}
+.nav-tab{
+  font-family:inherit;font-size:13.5px;font-weight:800;
+  padding:9px 15px;border-radius:100px;
+  border:1px solid transparent;background:transparent;
+  color:var(--muted);cursor:pointer;white-space:nowrap;
+  display:flex;align-items:center;gap:6px;
+  transition:all .3s cubic-bezier(.22,1,.36,1);
+}
+.nav-tab .icn{font-size:16px;line-height:1}
+.nav-tab:hover{background:rgba(255,255,255,.07);color:var(--txt)}
+.nav-tab.active{
+  background:linear-gradient(135deg,var(--green),#4ade80);
+  color:#04140a;
+  box-shadow:0 8px 22px -8px rgba(34,197,94,.9);
+  transform:translateY(-1px);
+}
+
+.voice-toggle{
+  flex-shrink:0;
+  width:42px;height:42px;border-radius:12px;
+  border:1px solid var(--brd);background:rgba(255,255,255,.06);
+  color:var(--txt);font-size:20px;cursor:pointer;
+  display:grid;place-items:center;
+  transition:.3s;
+}
+.voice-toggle:hover{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.5)}
+.voice-toggle.muted{opacity:.5}
+.voice-toggle.speaking{
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  border-color:transparent;
+  animation:voicePulse 1s ease-in-out infinite;
+}
+@keyframes voicePulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.12)}
+}
+
+/* ============================================================
+   PAGE TURN SLIDER
+   ============================================================ */
+.slider{
+  height:100vh;overflow-y:scroll;
+  scroll-snap-type:y proximity;scroll-behavior:smooth;
+  scrollbar-width:none;
+  padding-top:64px;
+  perspective:2000px;perspective-origin:center center;
+}
+.slider::-webkit-scrollbar{display:none}
+
+.page{
+  min-height:calc(100vh - 64px);
+  scroll-snap-align:start;
+  padding:34px 20px 120px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;
+  transform-origin:center center;
+  transform-style:preserve-3d;
+  backface-visibility:hidden;
+  will-change:transform,opacity;
+}
+
+.page.turn-in{animation:pageTurnIn 1.1s cubic-bezier(.19,1,.22,1) both}
+@keyframes pageTurnIn{
+  0%{opacity:0;transform:perspective(1600px) rotateX(-22deg) rotateY(8deg) translateY(90px) translateZ(-280px) scale(.92);filter:blur(10px)}
+  45%{filter:blur(0)}
+  100%{opacity:1;transform:perspective(1600px) rotateX(0) rotateY(0) translateY(0) translateZ(0) scale(1);filter:blur(0)}
+}
+
+.page-inner{max-width:960px;margin:0 auto;width:100%;position:relative;z-index:1}
+
+.page .anim{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.page.in .anim{opacity:1;transform:none}
+.page.in .anim:nth-child(1){transition-delay:.10s}
+.page.in .anim:nth-child(2){transition-delay:.20s}
+.page.in .anim:nth-child(3){transition-delay:.30s}
+.page.in .anim:nth-child(4){transition-delay:.40s}
+.page.in .anim:nth-child(5){transition-delay:.50s}
+.page.in .anim:nth-child(6){transition-delay:.60s}
+.page.in .anim:nth-child(7){transition-delay:.70s}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.step-tag{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  padding:9px 18px;border-radius:100px;margin-bottom:16px;
+  background:rgba(34,197,94,.14);color:#7dd3a0;
+  border:1px solid rgba(34,197,94,.3);
+}
+.step-tag.blue{background:rgba(56,189,248,.14);color:#7dd3fc;border-color:rgba(56,189,248,.3)}
+.step-tag.amber{background:rgba(251,191,36,.14);color:#fcd34d;border-color:rgba(251,191,36,.3)}
+.step-tag.purple{background:rgba(167,139,250,.14);color:#c4b5fd;border-color:rgba(167,139,250,.3)}
+.step-tag.red{background:rgba(251,113,133,.14);color:#fda4af;border-color:rgba(251,113,133,.3)}
+
+h2.big{
+  font-size:clamp(30px,5.6vw,48px);
+  font-weight:900;letter-spacing:-1.6px;line-height:1.06;
+  margin-bottom:12px;
+}
+.sub-big{
+  font-size:clamp(16px,2.6vw,18.5px);
+  color:var(--muted);line-height:1.6;
+  margin-bottom:26px;max-width:680px;
+}
+.grad{
+  background:linear-gradient(100deg,#4ade80,#38bdf8 48%,#a78bfa);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* ============================================================
+   PAGE 0 · PROFILE SETUP (Language inside)
+   ============================================================ */
+.profile-wrap{max-width:680px;margin:0 auto;width:100%}
+
+.profile-hero{text-align:center;margin-bottom:26px}
+.profile-avatar{
+  width:110px;height:110px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--blue));
+  display:grid;place-items:center;font-size:52px;
+  margin:0 auto 18px;
+  box-shadow:0 0 50px rgba(34,197,94,.6);
+  position:relative;
+  animation:avatarFloat 3.5s ease-in-out infinite;
+}
+@keyframes avatarFloat{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-8px) scale(1.03)}
+}
+.profile-avatar::after{
+  content:"";position:absolute;inset:-14px;border-radius:50%;
+  border:2px solid rgba(34,197,94,.35);
+  animation:avatarRing 3s ease-out infinite;
+}
+@keyframes avatarRing{
+  0%{transform:scale(.95);opacity:.9}
+  100%{transform:scale(1.35);opacity:0}
+}
+
+.profile-card{
+  background:var(--card);border:1px solid var(--brd);
+  border-radius:24px;padding:24px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  margin-bottom:16px;
+}
+
+/* Inline language picker inside profile */
+.profile-lang-label{
+  font-size:14px;font-weight:800;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.lang-grid-inline{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.lang-card-inline{
+  font-family:inherit;cursor:pointer;
+  padding:18px 12px;border-radius:18px;
+  border:2px solid var(--brd);background:rgba(255,255,255,.04);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  transition:transform .32s cubic-bezier(.22,1,.36,1),
+             border-color .3s,box-shadow .3s,background .3s;
+  position:relative;
+}
+.lang-card-inline:hover{transform:translateY(-4px);background:rgba(255,255,255,.09)}
+.lang-card-inline .flag{font-size:28px;line-height:1}
+.lang-card-inline .native{font-size:20px;font-weight:900;color:var(--txt);letter-spacing:-.3px}
+.lang-card-inline .en{font-size:10.5px;color:var(--muted);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.lang-card-inline.active{
+  border-color:var(--green);
+  background:linear-gradient(160deg,rgba(34,197,94,.22),rgba(56,189,248,.10));
+  box-shadow:0 14px 32px -16px rgba(34,197,94,.9);
+}
+.lang-card-inline.active::after{
+  content:"✓";position:absolute;top:8px;right:10px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--green);color:#04140a;
+  display:grid;place-items:center;font-size:14px;font-weight:900;
+  animation:checkPop .45s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes checkPop{0%{transform:scale(0) rotate(-180deg)}100%{transform:scale(1) rotate(0)}}
+
+/* Input fields */
+.field{margin-bottom:16px}
+.field label{
+  display:block;font-size:13.5px;font-weight:800;color:var(--muted);
+  margin-bottom:9px;letter-spacing:.06em;text-transform:uppercase;
+}
+select,input[type=text],input[type=tel]{
+  width:100%;font-family:inherit;font-size:17px;font-weight:700;
+  background:rgba(255,255,255,.06);border:2px solid var(--brd);
+  color:var(--txt);padding:17px 20px;border-radius:16px;outline:none;
+  transition:border-color .3s,box-shadow .3s,background .3s;
+  appearance:none;min-height:60px;
+}
+select{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%239fb0cf'><path d='M9 12L4 7h10z'/></svg>");
+  background-repeat:no-repeat;background-position:right 18px center;
+}
+select:focus,input:focus{border-color:var(--green);box-shadow:0 0 0 6px rgba(34,197,94,.16)}
+select option{background:#0d1526;color:#eef3ff;padding:10px}
+
+/* ============================================================
+   GPS SCENE — pin drop animation
+   ============================================================ */
+.gps-scene{
+  position:relative;height:200px;margin-bottom:22px;
+  border-radius:22px;overflow:hidden;
+  background:
+    linear-gradient(135deg,rgba(34,197,94,.14),rgba(56,189,248,.10)),
+    radial-gradient(circle at 50% 50%,rgba(34,197,94,.08) 0%,transparent 60%);
+  border:1px solid rgba(56,189,248,.28);
+}
+/* map grid lines */
+.gps-scene::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:36px 36px;
+  mask-image:radial-gradient(ellipse at 50% 50%,#000 30%,transparent 78%);
+  -webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 30%,transparent 78%);
+}
+.gps-scan{
+  position:absolute;inset:0;pointer-events:none;
+  background:conic-gradient(from 0deg at 50% 50%,
+    rgba(56,189,248,.35) 0deg,
+    transparent 60deg,
+    transparent 360deg);
+  animation:scanSpin 4s linear infinite;
+  opacity:0;
+}
+.gps-scene.searching .gps-scan{opacity:1}
+@keyframes scanSpin{to{transform:rotate(360deg)}}
+
+.gps-pulse{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:24px;height:24px;border-radius:50%;
+  border:2px solid rgba(56,189,248,.7);
+  animation:pulseRipple 2s ease-out infinite;
+  opacity:0;
+}
+.gps-pulse.p2{animation-delay:.7s}
+.gps-pulse.p3{animation-delay:1.4s}
+.gps-scene.searching .gps-pulse{opacity:1}
+@keyframes pulseRipple{
+  0%{transform:translate(-50%,-50%) scale(.6);opacity:.9}
+  100%{transform:translate(-50%,-50%) scale(6);opacity:0}
+}
+
+.gps-pin{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-100%) scale(0);
+  transform-origin:bottom center;
+  font-size:56px;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.6)) drop-shadow(0 0 30px rgba(34,197,94,.7));
+  opacity:0;
+  z-index:3;
+}
+.gps-scene.found .gps-pin{
+  animation:pinDrop .9s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes pinDrop{
+  0%{transform:translate(-50%,-300%) scale(.4);opacity:0}
+  60%{transform:translate(-50%,-100%) scale(1.15);opacity:1}
+  80%{transform:translate(-50%,-100%) scale(.95);opacity:1}
+  100%{transform:translate(-50%,-100%) scale(1);opacity:1}
+}
+.gps-scene.found .gps-pulse{display:none}
+.gps-scene.found .gps-scan{opacity:0}
+.gps-scene.found::after{
+  content:"";position:absolute;bottom:26%;
+  left:50%;transform:translateX(-50%);
+  width:44px;height:8px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.7),transparent 70%);
+  animation:shadowPop .9s cubic-bezier(.34,1.56,.64,1) forwards;
+  opacity:0;
+}
+@keyframes shadowPop{0%{opacity:0;width:0}100%{opacity:1;width:44px}}
+
+.gps-label{
+  position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  background:rgba(6,11,22,.92);border:1px solid rgba(34,197,94,.5);
+  color:#86efac;font-size:14px;font-weight:800;
+  padding:8px 18px;border-radius:100px;
+  white-space:nowrap;opacity:0;
+  box-shadow:0 8px 22px -8px rgba(0,0,0,.9);
+}
+.gps-scene.found .gps-label{
+  animation:fadeLabel .6s .7s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes fadeLabel{0%{opacity:0;transform:translate(-50%,10px)}100%{opacity:1;transform:translate(-50%,0)}}
+
+.gps-btn{
+  width:100%;max-width:420px;margin:0 auto;
+  font-family:inherit;font-size:17px;font-weight:900;
+  padding:20px 28px;border-radius:18px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--green),#4ade80 55%,var(--blue));
+  color:#04140a;display:flex;align-items:center;justify-content:center;gap:12px;
+  box-shadow:0 16px 38px -16px rgba(34,197,94,.95);
+  transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s;
+  min-height:64px;
+}
+.gps-btn:hover{transform:translateY(-3px);box-shadow:0 24px 46px -18px rgba(34,197,94,1)}
+.gps-btn:active{transform:scale(.97)}
+.gps-btn .icn{font-size:24px}
+.gps-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+/* ============================================================
+   CARDS / GRIDS
+   ============================================================ */
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:880px){
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:580px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .page{padding:26px 16px 120px}
+  body{font-size:16px}
+  .lang-grid-inline{grid-template-columns:1fr}
+  .top-bar-inner{padding:8px 12px;gap:10px}
+  .brand-name{display:none}
+}
+
+.card{
+  background:var(--card);border:1px solid var(--brd);
+  border-radius:var(--r);padding:24px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  transition:transform .35s cubic-bezier(.22,1,.36,1),
+             border-color .35s,box-shadow .35s,background .35s;
+  position:relative;overflow:hidden;
+}
+.card:hover{
+  transform:translateY(-6px);border-color:rgba(255,255,255,.24);
+  background:var(--card-2);box-shadow:var(--shadow);
+}
+.card.glow-green:hover{box-shadow:0 22px 46px -22px rgba(34,197,94,.8)}
+.card.glow-blue:hover{box-shadow:0 22px 46px -22px rgba(56,189,248,.8)}
+.card.glow-amber:hover{box-shadow:0 22px 46px -22px rgba(251,191,36,.8)}
+.card.glow-purple:hover{box-shadow:0 22px 46px -22px rgba(167,139,250,.8)}
+.card.glow-red:hover{box-shadow:0 22px 46px -22px rgba(251,113,133,.8)}
+
+.card-icon{
+  width:58px;height:58px;border-radius:17px;display:grid;place-items:center;
+  font-size:30px;margin-bottom:16px;
+  background:rgba(255,255,255,.07);border:1px solid var(--brd);
+  animation:iconFloat 3.5s ease-in-out infinite;
+}
+@keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.card h3{font-size:19px;font-weight:800;margin-bottom:8px;letter-spacing:-.3px}
+.card p{font-size:15px;color:var(--muted);line-height:1.65}
+
+.btn{
+  font-family:inherit;font-size:17px;font-weight:900;letter-spacing:.2px;
+  padding:18px 32px;border-radius:100px;border:1px solid transparent;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .28s cubic-bezier(.22,1,.36,1),
+             box-shadow .28s,background .28s,color .28s;
+  display:inline-flex;align-items:center;gap:11px;justify-content:center;
+  min-height:60px;
+}
+.btn:active{transform:scale(.96)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--green),#4ade80 55%,var(--blue));
+  color:#04140a;box-shadow:0 14px 34px -14px rgba(34,197,94,.95);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 22px 44px -16px rgba(34,197,94,1)}
+.btn-ghost{background:rgba(255,255,255,.07);color:var(--txt);border-color:var(--brd)}
+.btn-ghost:hover{background:rgba(255,255,255,.14);transform:translateY(-3px)}
+.btn-sm{padding:13px 22px;font-size:15px;min-height:48px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+.btn .ripple{position:absolute;border-radius:50%;transform:scale(0);background:rgba(255,255,255,.5);animation:rippleAnim .75s ease-out;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+.stat{text-align:center;padding:24px 16px}
+.stat .num{
+  font-size:clamp(30px,5.4vw,44px);font-weight:900;letter-spacing:-1.8px;
+  background:linear-gradient(135deg,#4ade80,#38bdf8);
+  -webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.05;
+}
+.stat .num.amber{background:linear-gradient(135deg,#fbbf24,#fb7185);-webkit-background-clip:text;background-clip:text}
+.stat .num.purple{background:linear-gradient(135deg,#a78bfa,#f472b6);-webkit-background-clip:text;background-clip:text}
+.stat .num.red{background:linear-gradient(135deg,#fb7185,#f43f5e);-webkit-background-clip:text;background-clip:text}
+.stat .lbl{font-size:14px;color:var(--muted);margin-top:8px;font-weight:700}
+
+/* ============================================================
+   DASHBOARD — Hero weather + AI Guard card
+   ============================================================ */
+.dash-hero{
+  position:relative;
+  background:linear-gradient(135deg,rgba(56,189,248,.20),rgba(34,197,94,.14),rgba(167,139,250,.12));
+  border:1px solid rgba(56,189,248,.35);
+  border-radius:26px;padding:28px;
+  overflow:hidden;
+  display:flex;gap:26px;align-items:center;flex-wrap:wrap;
+}
+.dash-hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(251,191,36,.22),transparent 45%),
+    radial-gradient(circle at 85% 80%,rgba(56,189,248,.22),transparent 45%);
+  pointer-events:none;
+}
+.dash-hero > *{position:relative;z-index:1}
+
+.dash-temp{
+  font-size:clamp(64px,13vw,110px);font-weight:900;letter-spacing:-5px;line-height:.95;
+  background:linear-gradient(135deg,#fff,#7dd3fc);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 60px rgba(56,189,248,.4);
+}
+.dash-temp sup{font-size:.32em;font-weight:700;vertical-align:super}
+
+.dash-emoji{
+  font-size:96px;filter:drop-shadow(0 10px 30px rgba(56,189,248,.7));
+  animation:bob 3.6s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+/* AI Guard mini card in dashboard */
+.ai-guard-mini{
+  background:linear-gradient(135deg,rgba(167,139,250,.20),rgba(244,114,182,.12));
+  border:1px solid rgba(167,139,250,.4);
+  border-radius:22px;padding:22px;
+  position:relative;overflow:hidden;
+  margin-top:18px;
+  cursor:pointer;
+  transition:.3s cubic-bezier(.22,1,.36,1);
+}
+.ai-guard-mini:hover{transform:translateY(-4px);box-shadow:0 22px 46px -22px rgba(167,139,250,.9)}
+.ai-guard-mini::before{
+  content:"";position:absolute;top:-40%;right:-10%;
+  width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(167,139,250,.35),transparent 70%);
+  filter:blur(30px);
+  animation:guardGlow 4s ease-in-out infinite;
+}
+@keyframes guardGlow{
+  0%,100%{transform:translate(0,0) scale(1);opacity:.7}
+  50%{transform:translate(-20px,20px) scale(1.15);opacity:1}
+}
+.ai-guard-mini h3{font-size:20px;font-weight:900;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.ai-guard-mini p{font-size:15px;color:#ddd6fe;line-height:1.6;font-weight:600;position:relative}
+
+.guard-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(167,139,250,.25);color:#ddd6fe;
+  font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 14px;border-radius:100px;margin-bottom:12px;
+  border:1px solid rgba(167,139,250,.4);
+}
+.guard-badge .dot{
+  width:8px;height:8px;border-radius:50%;background:#a78bfa;
+  box-shadow:0 0 10px #a78bfa;
+  animation:pulseDot 1.4s ease-in-out infinite;
+}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+/* ============================================================
+   WEATHER SCENE
+   ============================================================ */
+.weather-scene{position:relative;height:160px;margin-bottom:16px;display:flex;align-items:center;justify-content:center}
+.w-sun{
+  width:96px;height:96px;border-radius:50%;position:relative;
+  background:radial-gradient(circle at 35% 32%,#fff3c4,#fbbf24 58%,#f59e0b);
+  box-shadow:0 0 70px rgba(251,191,36,.75),0 0 140px rgba(251,191,36,.3);
+  animation:sunRise 3s ease-out both;
+}
+@keyframes sunRise{0%{transform:translateY(80px) scale(.4);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+.w-sun::after{
+  content:"";position:absolute;inset:-28px;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(251,191,36,.4),transparent 25%,rgba(251,191,36,.4) 50%,transparent 75%,rgba(251,191,36,.4));
+  animation:sunRays 18s linear infinite;filter:blur(9px);z-index:-1;
+}
+@keyframes sunRays{to{transform:rotate(360deg)}}
+
+.w-cloud{position:absolute;background:linear-gradient(180deg,#fff,#c7d6ee);border-radius:100px;opacity:.94;box-shadow:0 12px 30px -10px rgba(0,0,0,.6);top:30px}
+.w-cloud::before,.w-cloud::after{content:"";position:absolute;background:inherit;border-radius:50%}
+.w-cloud.c1{width:120px;height:38px;left:8%;animation:cloudDrift 9s ease-in-out infinite}
+.w-cloud.c1::before{width:52px;height:52px;top:-24px;left:18px}
+.w-cloud.c1::after{width:38px;height:38px;top:-16px;left:62px}
+.w-cloud.c2{width:96px;height:30px;right:6%;top:60px;opacity:.82;animation:cloudDrift 11s ease-in-out infinite reverse}
+.w-cloud.c2::before{width:44px;height:44px;top:-20px;left:12px}
+.w-cloud.c2::after{width:30px;height:30px;top:-14px;left:50px}
+@keyframes cloudDrift{0%,100%{transform:translateX(0)}50%{transform:translateX(28px)}}
+
+.w-rain{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:180px;height:60px}
+.w-rain i{position:absolute;top:-10px;width:3px;height:16px;border-radius:3px;background:linear-gradient(180deg,transparent,#38bdf8);animation:rainDrop 1.15s linear infinite}
+.w-rain i:nth-child(1){left:6%;animation-delay:0s}
+.w-rain i:nth-child(2){left:20%;animation-delay:.18s}
+.w-rain i:nth-child(3){left:34%;animation-delay:.36s}
+.w-rain i:nth-child(4){left:48%;animation-delay:.09s}
+.w-rain i:nth-child(5){left:62%;animation-delay:.45s}
+.w-rain i:nth-child(6){left:78%;animation-delay:.27s}
+.w-rain i:nth-child(7){left:92%;animation-delay:.6s}
+@keyframes rainDrop{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(64px);opacity:0}}
+
+.weather-hero{display:flex;align-items:center;gap:26px;flex-wrap:wrap;background:linear-gradient(135deg,rgba(56,189,248,.16),rgba(34,197,94,.10));border:1px solid rgba(56,189,248,.28)}
+.temp-big{font-size:clamp(56px,11vw,88px);font-weight:900;letter-spacing:-4px;line-height:1}
+.temp-big sup{font-size:.36em;font-weight:700;vertical-align:super}
+.wx-emoji{font-size:64px;filter:drop-shadow(0 8px 20px rgba(56,189,248,.6));animation:bob 3.6s ease-in-out infinite}
+
+.ring-wrap{position:relative;width:116px;height:116px;flex-shrink:0}
+.ring{transform:rotate(-90deg);width:116px;height:116px}
+.ring circle{fill:none;stroke-width:10;stroke-linecap:round}
+.ring .bg{stroke:rgba(255,255,255,.09)}
+.ring .fg{stroke:url(#gradRing);stroke-dasharray:327;stroke-dashoffset:327;transition:stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)}
+.ring-label{position:absolute;inset:0;display:grid;place-items:center;font-size:22px;font-weight:900;letter-spacing:-1px}
+
+.metric{padding:18px 20px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--brd);transition:.3s}
+.metric:hover{background:rgba(255,255,255,.1);transform:translateY(-4px)}
+.metric .k{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:800}
+.metric .v{font-size:26px;font-weight:900;margin-top:6px;letter-spacing:-.8px}
+.metric .v small{font-size:14px;font-weight:700;color:var(--muted);margin-left:4px}
+
+.hourly{display:flex;gap:12px;overflow-x:auto;padding:6px 2px 12px;scrollbar-width:thin}
+.hourly::-webkit-scrollbar{height:6px}
+.hourly::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:10px}
+.hour-card{flex:0 0 84px;text-align:center;padding:14px 8px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--brd);transition:.3s}
+.hour-card:hover{background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.4);transform:translateY(-4px)}
+.hour-card .h{font-size:12px;color:var(--muted);font-weight:800}
+.hour-card .e{font-size:24px;margin:7px 0}
+.hour-card .t{font-size:16px;font-weight:900}
+
+/* ============================================================
+   FORECAST
+   ============================================================ */
+.page#p-forecast .fc-card{opacity:0;transform:translateY(-60px) rotateX(70deg);transform-origin:top center}
+.page#p-forecast.in .fc-card{animation:calFlip .85s cubic-bezier(.22,1,.36,1) forwards}
+.page#p-forecast.in .fc-card:nth-child(1){animation-delay:.10s}
+.page#p-forecast.in .fc-card:nth-child(2){animation-delay:.20s}
+.page#p-forecast.in .fc-card:nth-child(3){animation-delay:.30s}
+.page#p-forecast.in .fc-card:nth-child(4){animation-delay:.40s}
+.page#p-forecast.in .fc-card:nth-child(5){animation-delay:.50s}
+.page#p-forecast.in .fc-card:nth-child(6){animation-delay:.60s}
+.page#p-forecast.in .fc-card:nth-child(7){animation-delay:.70s}
+@keyframes calFlip{0%{opacity:0;transform:perspective(800px) rotateX(80deg) translateY(-60px)}60%{opacity:1}100%{opacity:1;transform:perspective(800px) rotateX(0) translateY(0)}}
+
+.fc-card{text-align:center;padding:22px 14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid var(--brd);transition:.34s cubic-bezier(.22,1,.36,1)}
+.fc-card:hover{transform:translateY(-8px) scale(1.03);background:rgba(255,255,255,.1);box-shadow:var(--shadow)}
+.fc-card .day{font-size:13px;font-weight:900;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.fc-card .ico{font-size:38px;margin:12px 0;display:block;animation:iconFloat 3s ease-in-out infinite}
+.fc-card .hi{font-size:24px;font-weight:900;letter-spacing:-.8px}
+.fc-card .lo{font-size:14px;color:var(--muted);font-weight:700}
+.fc-bar{margin-top:12px;height:6px;border-radius:100px;background:rgba(255,255,255,.09);overflow:hidden}
+.fc-bar i{display:block;height:100%;width:0;border-radius:100px;background:linear-gradient(90deg,var(--blue),var(--amber),var(--red));transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+
+.chart{display:flex;align-items:flex-end;gap:12px;height:210px;padding:28px 6px 0;border-bottom:1px solid var(--brd)}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;height:100%;justify-content:flex-end}
+.chart .bar-v{width:100%;max-width:50px;border-radius:10px 10px 0 0;height:0;background:linear-gradient(180deg,var(--blue),rgba(56,189,248,.22));transition:height 1.15s cubic-bezier(.22,1,.36,1);position:relative}
+.chart .bar-v:hover{background:linear-gradient(180deg,#4ade80,rgba(34,197,94,.25))}
+.chart .bar-v::after{content:attr(data-v);position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:900;color:var(--muted);white-space:nowrap}
+.chart .col .lbl{font-size:13px;color:var(--muted);font-weight:800}
+
+/* ============================================================
+   AI WEEK GUARD — new dedicated page
+   ============================================================ */
+.guard-intro{
+  position:relative;
+  background:linear-gradient(135deg,rgba(167,139,250,.18),rgba(244,114,182,.12));
+  border:1px solid rgba(167,139,250,.4);
+  border-radius:24px;padding:26px;margin-bottom:22px;
+  overflow:hidden;
+}
+.guard-intro::before{
+  content:"";position:absolute;top:-50%;right:-10%;
+  width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(167,139,250,.4),transparent 70%);
+  filter:blur(40px);
+  animation:guardGlow 5s ease-in-out infinite;
+}
+.guard-intro > *{position:relative;z-index:1}
+
+/* 7-day guard grid */
+.guard-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:22px}
+
+.guard-card{
+  background:var(--card);border:1px solid var(--brd);
+  border-radius:20px;padding:20px;position:relative;overflow:hidden;
+  opacity:0;transform:translateY(30px) scale(.96);
+  transition:transform .35s cubic-bezier(.22,1,.36,1);
+}
+.page#p-guard.in .guard-card{
+  animation:guardCardIn .75s cubic-bezier(.22,1,.36,1) forwards;
+}
+.page#p-guard.in .guard-card:nth-child(1){animation-delay:.10s}
+.page#p-guard.in .guard-card:nth-child(2){animation-delay:.20s}
+.page#p-guard.in .guard-card:nth-child(3){animation-delay:.30s}
+.page#p-guard.in .guard-card:nth-child(4){animation-delay:.40s}
+.page#p-guard.in .guard-card:nth-child(5){animation-delay:.50s}
+.page#p-guard.in .guard-card:nth-child(6){animation-delay:.60s}
+.page#p-guard.in .guard-card:nth-child(7){animation-delay:.70s}
+@keyframes guardCardIn{
+  0%{opacity:0;transform:translateY(30px) scale(.96)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+.guard-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.25)}
+
+.guard-head{
+  display:flex;align-items:center;gap:12px;margin-bottom:12px;
+}
+.guard-day{
+  width:52px;height:52px;border-radius:14px;
+  background:rgba(255,255,255,.07);border:1px solid var(--brd);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.guard-day .dw{font-size:11px;color:var(--muted);font-weight:900;letter-spacing:.05em;text-transform:uppercase}
+.guard-day .dn{font-size:16px;font-weight:900;color:var(--txt);line-height:1}
+
+.guard-risk{
+  flex:1;display:flex;align-items:center;gap:8px;
+}
+.guard-risk .em{font-size:26px}
+.guard-risk .txt{font-size:15px;font-weight:800;color:var(--txt)}
+.guard-card.sev-high{border-color:rgba(251,113,133,.45);background:linear-gradient(135deg,rgba(251,113,133,.10),transparent)}
+.guard-card.sev-high::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:var(--red);box-shadow:0 0 22px var(--red);
+  animation:barPulse 1.4s ease-in-out infinite;
+}
+.guard-card.sev-med{border-color:rgba(251,191,36,.4);background:linear-gradient(135deg,rgba(251,191,36,.08),transparent)}
+.guard-card.sev-med::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:var(--amber);box-shadow:0 0 22px var(--amber);
+  animation:barPulse 1.8s ease-in-out infinite;
+}
+.guard-card.sev-low{border-color:rgba(34,197,94,.4);background:linear-gradient(135deg,rgba(34,197,94,.08),transparent)}
+.guard-card.sev-low::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:var(--green);box-shadow:0 0 22px var(--green);
+}
+@keyframes barPulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+.guard-msg{
+  font-size:14.5px;color:var(--muted);line-height:1.65;
+  padding-left:64px;
+}
+
+/* ============================================================
+   ALERTS
+   ============================================================ */
+.page#p-alerts .alert-item{opacity:0;transform:translateX(-60px)}
+.page#p-alerts.in .alert-item{animation:alertSlide .75s cubic-bezier(.22,1,.36,1) forwards}
+.page#p-alerts.in .alert-item:nth-child(1){animation-delay:.15s}
+.page#p-alerts.in .alert-item:nth-child(2){animation-delay:.25s}
+.page#p-alerts.in .alert-item:nth-child(3){animation-delay:.35s}
+.page#p-alerts.in .alert-item:nth-child(4){animation-delay:.45s}
+.page#p-alerts.in .alert-item:nth-child(5){animation-delay:.55s}
+@keyframes alertSlide{0%{opacity:0;transform:translateX(-60px) scale(.95)}100%{opacity:1;transform:translateX(0) scale(1)}}
+
+.alert-item{display:flex;gap:16px;align-items:flex-start;padding:20px 22px;border-radius:18px;border:1px solid var(--brd);background:rgba(255,255,255,.045);margin-bottom:14px;position:relative;overflow:hidden;transition:transform .32s cubic-bezier(.22,1,.36,1),background .32s}
+.alert-item:hover{transform:translateX(8px);background:rgba(255,255,255,.09)}
+.alert-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}
+.alert-item.sev-high::before{background:var(--red);box-shadow:0 0 22px var(--red);animation:barPulse 1.4s ease-in-out infinite}
+.alert-item.sev-med::before{background:var(--amber);box-shadow:0 0 22px var(--amber);animation:barPulse 1.8s ease-in-out infinite}
+.alert-item.sev-low::before{background:var(--green);box-shadow:0 0 22px var(--green)}
+
+.alert-ico{width:52px;height:52px;flex-shrink:0;border-radius:15px;display:grid;place-items:center;font-size:24px;background:rgba(255,255,255,.07)}
+.sev-high .alert-ico{background:rgba(251,113,133,.18);animation:siren 1.2s ease-in-out infinite}
+.sev-med .alert-ico{background:rgba(251,191,36,.16)}
+.sev-low .alert-ico{background:rgba(34,197,94,.16)}
+@keyframes siren{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(251,113,133,.55)}50%{transform:scale(1.06);box-shadow:0 0 0 12px rgba(251,113,133,0)}}
+
+.alert-item h4{font-size:17px;font-weight:800;margin-bottom:6px}
+.alert-item p{font-size:15px;color:var(--muted);line-height:1.65}
+.alert-time{font-size:13px;color:#6d7f9e;margin-top:9px;font-weight:700;letter-spacing:.03em}
+
+.badge{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:100px}
+.badge.high{background:rgba(251,113,133,.2);color:#fda4af}
+.badge.med{background:rgba(251,191,36,.2);color:#fcd34d}
+.badge.low{background:rgba(34,197,94,.2);color:#86efac}
+.badge.info{background:rgba(56,189,248,.2);color:#7dd3fc}
+
+/* ============================================================
+   ADVISORY — growing plant
+   ============================================================ */
+.grow-scene{display:flex;align-items:flex-end;justify-content:center;height:120px;margin-bottom:20px;position:relative}
+.grow-soil{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:140px;height:14px;border-radius:8px;background:linear-gradient(180deg,#5b3a1e,#3a2412);box-shadow:0 6px 18px -8px rgba(0,0,0,.9)}
+.grow-seed{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:18px;height:26px;border-radius:50% 50% 40% 40%;background:radial-gradient(circle at 35% 30%,#a16207,#78350f);animation:seedDrop 1.4s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes seedDrop{0%{transform:translate(-50%,-160px) scale(.6);opacity:0}60%{opacity:1}80%{transform:translate(-50%,6px) scale(.95)}100%{transform:translate(-50%,0) scale(1);opacity:1}}
+.grow-plant{position:absolute;bottom:14px;left:50%;transform-origin:bottom center;transform:translateX(-50%) scaleY(0)}
+.page.in .grow-plant{animation:sprout 1.6s 0.9s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes sprout{0%{transform:translateX(-50%) scaleY(0)}60%{transform:translateX(-50%) scaleY(1.05)}100%{transform:translateX(-50%) scaleY(1)}}
+.grow-stem{width:5px;height:52px;border-radius:4px;margin:0 auto;background:linear-gradient(180deg,#22c55e,#15803d)}
+.grow-leaf{width:26px;height:16px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#4ade80);position:absolute;bottom:38px;box-shadow:0 0 12px rgba(34,197,94,.55)}
+.grow-leaf.left{left:calc(50% - 26px);transform:rotate(-25deg);transform-origin:right center}
+.grow-leaf.right{left:calc(50% + 0px);transform:rotate(25deg);transform-origin:left center}
+
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{font-family:inherit;font-size:15px;font-weight:800;padding:13px 22px;border-radius:100px;cursor:pointer;background:rgba(255,255,255,.05);border:1.5px solid var(--brd);color:var(--muted);transition:all .28s cubic-bezier(.22,1,.36,1);min-height:50px}
+.chip:hover{background:rgba(255,255,255,.11);color:var(--txt);transform:translateY(-2px)}
+.chip.active{background:linear-gradient(135deg,rgba(34,197,94,.9),rgba(56,189,248,.9));color:#04140a;border-color:transparent;box-shadow:0 8px 22px -10px rgba(34,197,94,.9)}
+
+.bar-row{margin-bottom:16px}
+.bar-head{display:flex;justify-content:space-between;font-size:15px;margin-bottom:8px;font-weight:800}
+.bar-head span:last-child{color:var(--muted)}
+.bar{height:11px;border-radius:100px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:100px;width:0;background:linear-gradient(90deg,var(--green),var(--blue));transition:width 1.3s cubic-bezier(.22,1,.36,1)}
+.bar.amber i{background:linear-gradient(90deg,var(--amber),var(--red))}
+.bar.purple i{background:linear-gradient(90deg,var(--purple),var(--pink))}
+
+/* ============================================================
+   PANCHAYAT
+   ============================================================ */
+.page#p-panchayat .table-row-anim tbody tr{opacity:0;transform:translateY(30px)}
+.page#p-panchayat.in .table-row-anim tbody tr{animation:buildingRise .75s cubic-bezier(.22,1,.36,1) forwards}
+.page#p-panchayat.in .table-row-anim tbody tr:nth-child(1){animation-delay:.20s}
+.page#p-panchayat.in .table-row-anim tbody tr:nth-child(2){animation-delay:.30s}
+.page#p-panchayat.in .table-row-anim tbody tr:nth-child(3){animation-delay:.40s}
+.page#p-panchayat.in .table-row-anim tbody tr:nth-child(4){animation-delay:.50s}
+.page#p-panchayat.in .table-row-anim tbody tr:nth-child(5){animation-delay:.60s}
+.page#p-panchayat.in .table-row-anim tbody tr:nth-child(6){animation-delay:.70s}
+@keyframes buildingRise{0%{opacity:0;transform:translateY(30px) scaleY(.6)}100%{opacity:1;transform:translateY(0) scaleY(1)}}
+
+.tbl-wrap{overflow-x:auto;border-radius:20px;border:1px solid var(--brd);background:rgba(255,255,255,.035)}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th{text-align:left;font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:16px 20px;background:rgba(255,255,255,.045);border-bottom:1px solid var(--brd);white-space:nowrap}
+td{padding:16px 20px;font-size:15.5px;border-bottom:1px solid rgba(255,255,255,.055);font-weight:700}
+tbody tr{transition:background .25s}
+tbody tr:hover{background:rgba(56,189,248,.08)}
+tbody tr:last-child td{border-bottom:none}
+
+/* ============================================================
+   REPORTS
+   ============================================================ */
+.page#p-reports .chart .bar-v{height:0}
+.page#p-reports.in .chart .bar-v{animation:barGrow 1.2s cubic-bezier(.22,1,.36,1) forwards}
+.page#p-reports.in .chart .col:nth-child(1) .bar-v{animation-delay:.15s}
+.page#p-reports.in .chart .col:nth-child(2) .bar-v{animation-delay:.25s}
+.page#p-reports.in .chart .col:nth-child(3) .bar-v{animation-delay:.35s}
+.page#p-reports.in .chart .col:nth-child(4) .bar-v{animation-delay:.45s}
+.page#p-reports.in .chart .col:nth-child(5) .bar-v{animation-delay:.55s}
+.page#p-reports.in .chart .col:nth-child(6) .bar-v{animation-delay:.65s}
+@keyframes barGrow{0%{transform:scaleY(0);transform-origin:bottom}100%{transform:scaleY(1);transform-origin:bottom}}
+
+.note{font-size:15px;color:var(--muted);background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.22);border-radius:16px;padding:16px 20px;line-height:1.7;margin-top:18px}
+
+#toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,160%);background:linear-gradient(135deg,rgba(34,197,94,.97),rgba(56,189,248,.97));color:#04140a;font-weight:900;font-size:15px;padding:16px 28px;border-radius:100px;z-index:300;box-shadow:0 18px 40px -14px rgba(0,0,0,.85);transition:transform .5s cubic-bezier(.22,1,.36,1);max-width:90vw;text-align:center}
+#toast.show{transform:translate(-50%,0)}
+
+#splash{position:fixed;inset:0;z-index:9999;background:#060b16;display:grid;place-items:center;transition:opacity .7s,visibility .7s}
+#splash.hide{opacity:0;visibility:hidden}
+.splash-inner{display:flex;flex-direction:column;align-items:center;gap:22px}
+.splash-ring{width:80px;height:80px;border-radius:50%;border:3px solid rgba(255,255,255,.08);border-top-color:var(--green);border-right-color:var(--blue);animation:spin .9s linear infinite}
+.splash-text{font-weight:800;letter-spacing:.18em;font-size:13px;color:var(--muted);text-transform:uppercase}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+::selection{background:rgba(34,197,94,.35)}
+</style>
+</head>
+
+<body>
+
+<div class="bg-orbs">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="orb o3"></div><div class="orb o4"></div>
+</div>
+<div class="bg-particles">
+  <span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span>
+</div>
+
+<div id="splash">
+  <div class="splash-inner">
+    <div class="splash-ring"></div>
+    <div class="splash-text">Panchayat Weather AI</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TOP BAR with feature tabs
+     ============================================================ -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand" onclick="jumpTo(0)">
+      <div class="brand-logo">🌾</div>
+      <div class="brand-name">Panchayat Weather<small>SIH26074</small></div>
+    </div>
+    <nav class="top-nav" id="topNav"></nav>
+    <button class="voice-toggle" id="voiceToggle" onclick="toggleVoice()" title="Voice on/off">🔊</button>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="gradRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="55%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="slider" id="slider">
+
+  <!-- ============================================================
+       PAGE 0 · PROFILE SETUP (language inside)
+       ============================================================ -->
+  <section class="page" id="p-profile">
+    <div class="page-inner">
+      <div class="profile-wrap">
+
+        <div class="profile-hero anim">
+          <div class="profile-avatar">👨‍🌾</div>
+          <div class="step-tag" id="profStepTag">ప్రొఫైల్ · Profile</div>
+          <h2 class="big" id="profTitle">మీ <span class="grad">వివరాలు నింపండి</span></h2>
+          <p class="sub-big" id="profSub" style="margin-left:auto;margin-right:auto;text-align:center">
+            మీకు బాగా అర్థమయ్యే భాషను ఎంచుకోండి · మీ పేరు మరియు ఫోన్ నంబర్ ఇవ్వండి
+          </p>
+        </div>
+
+        <!-- Language inside profile -->
+        <div class="profile-card anim">
+          <div class="profile-lang-label">
+            🗣️ <span id="profLangLbl">భాషను ఎంచుకోండి</span>
+          </div>
+          <div class="lang-grid-inline" id="langGridInline">
+            <button class="lang-card-inline active" data-lang="te">
+              <span class="flag">🌺</span>
+              <span class="native">తెలుగు</span>
+              <span class="en">Telugu</span>
+            </button>
+            <button class="lang-card-inline" data-lang="hi">
+              <span class="flag">🪔</span>
+              <span class="native">हिन्दी</span>
+              <span class="en">Hindi</span>
+            </button>
+            <button class="lang-card-inline" data-lang="en">
+              <span class="flag">🔤</span>
+              <span class="native">English</span>
+              <span class="en">English</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Profile fields -->
+        <div class="profile-card anim">
+          <div class="field">
+            <label for="profName" id="lblName">మీ పేరు</label>
+            <input type="text" id="profName" placeholder="రాము · Ramu" value="రాము" autocomplete="name" />
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="profPhone" id="lblPhone">ఫోన్ నంబర్</label>
+            <input type="tel" id="profPhone" placeholder="+91 XXXXX XXXXX" value="+91 98765 43210" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="anim" style="text-align:center;margin-top:10px">
+          <button class="btn btn-primary" onclick="startSetup()" style="min-width:300px" id="startBtn">
+            ప్రారంభించండి · Get Started →
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 1 · LOCATION (GPS pin drop)
+       ============================================================ -->
+  <section class="page" id="p-location">
+    <div class="page-inner">
+      <div class="anim">
+        <div class="step-tag blue" id="locStepTag">📍 Location · స్థానం</div>
+        <h2 class="big" id="locTitle">మీ పొలం <span class="grad">ఎక్కడ ఉంది?</span></h2>
+        <p class="sub-big" id="locSub">GPS బటన్ నొక్కండి — మీ గ్రామం ఆటోమేటిక్‌గా కనుగొంటాము.</p>
+      </div>
+
+      <div class="gps-scene anim" id="gpsScene">
+        <div class="gps-scan"></div>
+        <div class="gps-pulse"></div>
+        <div class="gps-pulse p2"></div>
+        <div class="gps-pulse p3"></div>
+        <div class="gps-pin">📍</div>
+        <div class="gps-label" id="gpsLabel">—</div>
+      </div>
+
+      <div class="anim" style="text-align:center">
+        <button class="gps-btn" id="gpsBtn" onclick="detectLocation()">
+          <span class="icn">🛰️</span>
+          <span id="gpsBtnTxt">GPS తో నా స్థానం కనుగొనండి</span>
+        </button>
+      </div>
+
+      <div class="or-divider anim" id="orDiv" style="display:flex;align-items:center;gap:16px;margin:24px 0;color:var(--muted);font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase">
+        లేదా మాన్యువల్‌గా ఎంచుకోండి
+      </div>
+
+      <div class="anim" style="display:grid;gap:16px;grid-template-columns:1fr">
+        <div class="field">
+          <label for="stateSel" id="lblState">రాష్ట్రం</label>
+          <select id="stateSel" onchange="onStateChange()"></select>
+        </div>
+        <div class="field">
+          <label for="districtSel" id="lblDistrict">జిల్లా</label>
+          <select id="districtSel" onchange="onDistrictChange()"></select>
+        </div>
+        <div class="field">
+          <label for="villageSel" id="lblVillage">గ్రామం</label>
+          <select id="villageSel"></select>
+        </div>
+      </div>
+
+      <div class="anim" style="text-align:center;margin-top:10px">
+        <button class="btn btn-primary" onclick="confirmLocation()" style="min-width:320px" id="confirmBtn">
+          ✅ నిర్ధారించి కొనసాగించండి
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 2 · DASHBOARD (enhanced + AI Guard preview)
+       ============================================================ -->
+  <section class="page" id="p-dashboard">
+    <div class="page-inner">
+      <div class="anim">
+        <div class="step-tag" id="dashTag">🏠 Home · హోమ్</div>
+        <h2 class="big" id="greeting">నమస్కారం, <span class="grad">రైతు</span> 👋</h2>
+        <p class="sub-big" id="locationLine">📍 Gajwel · Siddipet · Telangana</p>
+      </div>
+
+      <div class="dash-hero anim">
+        <div class="dash-emoji">⛅</div>
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:13px;color:#7dd3fc;font-weight:900;letter-spacing:.14em;text-transform:uppercase" id="todayLbl">ఈ రోజు</div>
+          <div class="dash-temp"><span data-count="28">0</span><sup>°C</sup></div>
+          <div style="color:#ddd6fe;font-size:16px;margin-top:6px;font-weight:700" id="dashDesc">పాక్షికంగా మేఘావృతం · 31°C అనుభూతి</div>
+        </div>
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="52"></circle>
+            <circle class="fg" id="dashRing" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <div class="ring-label"><span data-count="72">0</span>%</div>
+        </div>
+      </div>
+
+      <div class="grid g4 anim" style="margin-top:18px">
+        <div class="metric"><div class="k">💧 <span class="i18n" data-k="humidity"></span></div><div class="v"><span data-count="68">0</span><small>%</small></div></div>
+        <div class="metric"><div class="k">💨 <span class="i18n" data-k="wind"></span></div><div class="v"><span data-count="12">0</span><small>km/h</small></div></div>
+        <div class="metric"><div class="k">🌧️ <span class="i18n" data-k="rain"></span></div><div class="v"><span data-count="4.2" data-dec="1">0</span><small>mm</small></div></div>
+        <div class="metric"><div class="k">🌱 <span class="i18n" data-k="soil"></span></div><div class="v"><span data-count="46">0</span><small>%</small></div></div>
+      </div>
+
+      <!-- AI Week Guard preview card -->
+      <div class="ai-guard-mini anim" onclick="jumpTo(4)">
+        <span class="guard-badge"><span class="dot"></span><span class="i18n" data-k="guardBadge"></span></span>
+        <h3>🛡️ <span class="i18n" data-k="guardTitle"></span></h3>
+        <p class="i18n" data-k="guardPreview"></p>
+        <div style="margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:#c4b5fd">
+          <span class="i18n" data-k="guardOpen"></span> →
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 3 · CURRENT WEATHER
+       ============================================================ -->
+  <section class="page" id="p-weather">
+    <div class="page-inner">
+      <div class="anim">
+        <div class="step-tag blue" id="wTag">🌤️ Weather · వాతావరణం</div>
+        <h2 class="big" id="wTitle">ఈ రోజు <span class="grad">వాతావరణం</span></h2>
+        <p class="sub-big" id="wSub">సమీప వాతావరణ కేంద్రం నుండి ప్రత్యక్ష రీడింగ్‌లు.</p>
+      </div>
+
+      <div class="weather-scene anim">
+        <div class="w-sun"></div>
+        <div class="w-cloud c1"></div>
+        <div class="w-cloud c2"></div>
+        <div class="w-rain"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="card weather-hero anim">
+        <div class="wx-emoji">🌦️</div>
+        <div style="flex:1;min-width:200px">
+          <div class="temp-big"><span data-count="28">0</span><sup>°C</sup></div>
+          <div style="font-size:17px;font-weight:800;margin-top:6px" id="wCond"></div>
+          <div style="color:var(--muted);font-size:15px;margin-top:4px" id="wRange"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span class="badge info" id="wUpdated"></span>
+          <span class="badge low" id="wAQ"></span>
+        </div>
+      </div>
+
+      <h3 style="margin:26px 0 8px;font-size:20px;font-weight:900" class="anim" id="hNext">⏰ తదుపరి గంటలు</h3>
+      <div class="hourly anim">
+        <div class="hour-card"><div class="h">NOW</div><div class="e">🌦️</div><div class="t">28°</div></div>
+        <div class="hour-card"><div class="h">12 PM</div><div class="e">⛅</div><div class="t">30°</div></div>
+        <div class="hour-card"><div class="h">01 PM</div><div class="e">☀️</div><div class="t">32°</div></div>
+        <div class="hour-card"><div class="h">02 PM</div><div class="e">☀️</div><div class="t">33°</div></div>
+        <div class="hour-card"><div class="h">03 PM</div><div class="e">⛅</div><div class="t">31°</div></div>
+        <div class="hour-card"><div class="h">04 PM</div><div class="e">🌧️</div><div class="t">27°</div></div>
+        <div class="hour-card"><div class="h">05 PM</div><div class="e">🌧️</div><div class="t">25°</div></div>
+        <div class="hour-card"><div class="h">06 PM</div><div class="e">🌦️</div><div class="t">24°</div></div>
+      </div>
+
+      <h3 style="margin:20px 0 12px;font-size:20px;font-weight:900" class="anim" id="hDetails">📊 మరిన్ని వివరాలు</h3>
+      <div class="grid g4 anim">
+        <div class="metric"><div class="k">🌡️ <span class="i18n" data-k="feels"></span></div><div class="v"><span data-count="31">0</span><small>°C</small></div></div>
+        <div class="metric"><div class="k">💧 <span class="i18n" data-k="humidity"></span></div><div class="v"><span data-count="68">0</span><small>%</small></div></div>
+        <div class="metric"><div class="k">📈 <span class="i18n" data-k="pressure"></span></div><div class="v"><span data-count="1012">0</span><small>hPa</small></div></div>
+        <div class="metric"><div class="k">👁️ <span class="i18n" data-k="visibility"></span></div><div class="v"><span data-count="8.5" data-dec="1">0</span><small>km</small></div></div>
+        <div class="metric"><div class="k">☀️ UV</div><div class="v"><span data-count="6">0</span><small id="uvLbl"></small></div></div>
+        <div class="metric"><div class="k">💦 <span class="i18n" data-k="dew"></span></div><div class="v"><span data-count="21">0</span><small>°C</small></div></div>
+        <div class="metric"><div class="k">🌅 <span class="i18n" data-k="sunrise"></span></div><div class="v">06:12<small>AM</small></div></div>
+        <div class="metric"><div class="k">🌇 <span class="i18n" data-k="sunset"></span></div><div class="v">06:48<small>PM</small></div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 4 · 7-DAY FORECAST
+       ============================================================ -->
+  <section class="page" id="p-forecast">
+    <div class="page-inner">
+      <div class="anim">
+        <div class="step-tag blue" id="fTag">📅 Forecast · సూచన</div>
+        <h2 class="big" id="fTitle">తదుపరి <span class="grad">7 రోజులు</span></h2>
+        <p class="sub-big" id="fSub">వారంలో విత్తడం, నీరు, స్ప్రే, కోత ప్లాన్ చేయండి.</p>
+      </div>
+
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px">
+        <div class="fc-card"><div class="day" data-day="mon"></div><span class="ico">🌧️</span><div class="hi">27°</div><div class="lo">21°</div><div class="fc-bar"><i data-w="60%"></i></div></div>
+        <div class="fc-card"><div class="day" data-day="tue"></div><span class="ico">⛈️</span><div class="hi">25°</div><div class="lo">20°</div><div class="fc-bar"><i data-w="80%"></i></div></div>
+        <div class="fc-card"><div class="day" data-day="wed"></div><span class="ico">🌦️</span><div class="hi">28°</div><div class="lo">21°</div><div class="fc-bar"><i data-w="55%"></i></div></div>
+        <div class="fc-card"><div class="day" data-day="thu"></div><span class="ico">⛅</span><div class="hi">31°</div><div class="lo">22°</div><div class="fc-bar"><i data-w="35%"></i></div></div>
+        <div class="fc-card"><div class="day" data-day="fri"></div><span class="ico">☀️</span><div class="hi">33°</div><div class="lo">23°</div><div class="fc-bar"><i data-w="18%"></i></div></div>
+        <div class="fc-card"><div class="day" data-day="sat"></div><span class="ico">☀️</span><div class="hi">34°</div><div class="lo">24°</div><div class="fc-bar"><i data-w="12%"></i></div></div>
+        <div class="fc-card"><div class="day" data-day="sun"></div><span class="ico">⛅</span><div class="hi">32°</div><div class="lo">23°</div><div class="fc-bar"><i data-w="30%"></i></div></div>
+      </div>
+
+      <div class="card anim" style="margin-top:22px">
+        <h3 style="font-size:19px;margin-bottom:6px" id="fcChartT"></h3>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:10px" id="fcChartS"></p>
+        <div class="chart">
+          <div class="col"><div class="bar-v" data-h="62%" data-v="18mm"></div><div class="lbl" data-day="mon"></div></div>
+          <div class="col"><div class="bar-v" data-h="92%" data-v="28mm"></div><div class="lbl" data-day="tue"></div></div>
+          <div class="col"><div class="bar-v" data-h="48%" data-v="12mm"></div><div class="lbl" data-day="wed"></div></div>
+          <div class="col"><div class="bar-v" data-h="26%" data-v="6mm"></div><div class="lbl" data-day="thu"></div></div>
+          <div class="col"><div class="bar-v" data-h="12%" data-v="2mm"></div><div class="lbl" data-day="fri"></div></div>
+          <div class="col"><div class="bar-v" data-h="6%" data-v="0mm"></div><div class="lbl" data-day="sat"></div></div>
+          <div class="col"><div class="bar-v" data-h="22%" data-v="5mm"></div><div class="lbl" data-day="sun"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 5 · AI WEEK GUARD (new)
+       ============================================================ -->
+  <section class="page" id="p-guard">
+    <div class="page-inner">
+      <div class="anim">
+        <div class="step-tag purple" id="guardTag">🛡️ AI Guard · రక్షణ</div>
+        <h2 class="big" id="guardH">AI ఒక వారం <span class="grad">ముందుగానే చెబుతుంది</span></h2>
+        <p class="sub-big" id="guardP">మీ పంటను రక్షించడానికి ఏడు రోజుల ముందస్తు సమాచారం.</p>
+      </div>
+
+      <div class="guard-intro anim">
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+          <div style="font-size:56px;filter:drop-shadow(0 6px 20px rgba(167,139,250,.7));animation:bob 3.5s ease-in-out infinite">🛡️</div>
+          <div style="flex:1;min-width:220px">
+            <div style="font-size:14px;color:#c4b5fd;font-weight:900;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px" id="guardIntroBadge">AI చేత సిద్ధం</div>
+            <div style="font-size:17px;font-weight:800;line-height:1.5" id="guardIntroMsg">
+              వచ్చే వారంలో మీ గ్రామంలో ఏమి జరుగుతుందో AI ఇప్పుడే చెబుతోంది. ఏ రోజు ఏమి జాగ్రత్త తీసుకోవాలో కింద చూడండి.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guard-grid" id="guardGrid"></div>
+
+      <div class="note anim" style="margin-top:22px">
+        🤖 <span class="i18n" data-k="guardHow"></span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 6 · ALERTS
+       ============================================================ -->
+  <section class="page" id="p-alerts">
+    <div class="page-inner">
+      <div class="anim">
+        <div class="step-tag red" id="aTag">🚨 Alerts · హెచ్చరికలు</div>
+        <h2 class="big" id="aTitle">ముఖ్యమైన <span class="grad">హెచ్చరికలు</span></h2>
+        <p class="sub-big" id="aSub">మీ ఫోన్‌కు మీ భాషలో హెచ్చరికలు.</p>
+      </div>
+
+      <div class="grid g3 anim">
+        <div class="card stat glow-red"><div class="num red"><span data-count="2">0</span></div><div class="lbl i18n" data-k="high"></div></div>
+        <div class="card stat glow-amber"><div class="num amber"><span data-count="3">0</span></div><div class="lbl i18n" data-k="medium"></div></div>
+        <div class="card stat glow-green"><div class="num"><span data-count="4">0</span></div><div class="lbl i18n" data-k="advisories"></div></div>
+      </div>
+
+      <div style="margin-top:22px">
+        <div class="alert-item sev-high">
+          <div class="alert-ico">🌧️</div>
+          <div style="flex:1">
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+              <h4 class="i18n" data-k="aHeavy"></h4><span class="badge high i18n" data-k="high"></span>
+            </div>
+            <p class="i18n" data-k="aHeavyMsg"></p>
+            <div class="alert-time i18n" data-k="aTime1"></div>
+          </div>
+        </div>
+
+        <div class="alert-item sev-high">
+          <div class="alert-ico">💨</div>
+          <div style="flex:1">
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+              <h4 class="i18n" data-k="aWind"></h4><span class="badge high i18n" data-k="high"></span>
+            </div>
+            <p class="i18n" data-k="aWindMsg"></p>
+            <div class="alert-time i18n" data-k="aTime2"></div>
+          </div>
+        </div>
+
+        <div class="alert-item sev-med">
+          <div class="alert-ico">🌡️</div>
+          <div style="flex:1">
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+              <h4 class="i18n" data-k="aCold"></h4><span class="badge med i18n" data-k="medium"></span>
+            </div>
+            <p class="i18n" data-k="aColdMsg"></p>
+            <div class="alert-time i18n" data-k="aTime3"></div>
+          </div>
+        </div>
+
+        <div class="alert-item sev-med">
+          <div class="alert-ico">🐛</div>
+          <div style="flex:1">
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+              <h4 class="i18n" data-k="aPest"></h4><span class="badge med i18n" data-k="medium"></span>
+            </div>
+            <p class="i18n" data-k="aPestMsg"></p>
+            <div class="alert-time i18n" data-k="aTime4"></div>
+          </div>
+        </div>
+
+        <div class="alert-item sev-low">
+          <div class="alert-ico">💧</div>
+          <div style="flex:1">
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+              <h4 class="i18n" data-k="aIrrig"></h4><span class="badge low i18n" data-k="advisory"></span>
+            </div>
+            <p class="i18n" data-k="aIrrigMsg"></p>
+            <div class="alert-time i18n" data-k="aTime5"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 7 · ADVISORY
+       ============================================================ -->
+  <section class="page" id="p-advisory">
+    <div class="page-inner">
+      <div class="anim">
+        <div class="step-tag" id="advTag">🌱 Advisory · సలహా</div>
+        <h2 class="big" id="advTitle">ఈ వారం <span class="grad">ఏమి చేయాలి</span></h2>
+        <p class="sub-big" id="advSub">పంటలు, నీరు, ఎరువులపై సరళమైన సలహా.</p>
+      </div>
+
+      <div class="grow-scene anim">
+        <div class="grow-soil"></div>
+        <div class="grow-seed"></div>
+        <div class="grow-plant">
+          <div class="grow-stem"></div>
+          <div class="grow-leaf left"></div>
+          <div class="grow-leaf right"></div>
+        </div>
+      </div>
+
+      <div class="grid g2 anim">
+        <div class="card glow-blue">
+          <div class="card-icon">💧</div>
+          <h3 class="i18n" data-k="waterIrr"></h3>
+          <p style="margin-bottom:16px;font-size:15.5px" class="i18n" data-k="waterAdv"></p>
+          <div class="bar-row">
+            <div class="bar-head"><span class="i18n" data-k="soilMoist"></span><span>78%</span></div>
+            <div class="bar"><i data-w="78%"></i></div>
+          </div>
+          <div class="bar-row" style="margin-bottom:0">
+            <div class="bar-head"><span class="i18n" data-k="waterSaved"></span><span>~42,000 L</span></div>
+            <div class="bar"><i data-w="65%"></i></div>
+          </div>
+        </div>
+
+        <div class="card glow-green">
+          <div class="card-icon">🧪</div>
+          <h3 class="i18n" data-k="fertiliser"></h3>
+          <p style="margin-bottom:16px;font-size:15.5px" class="i18n" data-k="fertAdv"></p>
+          <div class="bar-row">
+            <div class="bar-head"><span class="i18n" data-k="nitrogen"></span><span>60 kg/ha</span></div>
+            <div class="bar"><i data-w="60%"></i></div>
+          </div>
+          <div class="bar-row" style="margin-bottom:0">
+            <div class="bar-head"><span class="i18n" data-k="washRisk"></span><span class="i18n" data-k="high"></span></div>
+            <div class="bar amber"><i data-w="84%"></i></div>
+          </div>
+        </div>
+
+        <div class="card glow-amber">
+          <div class="card-icon">🐛</div>
+          <h3 class="i18n" data-k="pestWatch"></h3>
+          <p style="margin-bottom:16px;font-size:15.5px" class="i18n" data-k="pestAdv"></p>
+          <div class="bar-row">
+            <div class="bar-head"><span class="i18n" data-k="aphidRisk"></span><span>72%</span></div>
+            <div class="bar amber"><i data-w="72%"></i></div>
+          </div>
+          <div class="bar-row" style="margin-bottom:0">
+            <div class="bar-head"><span class="i18n" data-k="mildewRisk"></span><span>58%</span></div>
+            <div class="bar amber"><i data-w="58%"></i></div>
+          </div>
+        </div>
+
+        <div class="card glow-purple">
+          <div class="card-icon">🌾</div>
+          <h3 class="i18n" data-k="bestCrops"></h3>
+          <p style="margin-bottom:16px;font-size:15.5px" class="i18n" data-k="cropsSub"></p>
+          <div class="chips">
+            <span class="chip active">🌾 <span class="i18n" data-k="cropWheat"></span></span>
+            <span class="chip active">🧅 <span class="i18n" data-k="cropOnion"></span></span>
+            <span class="chip">🍇 <span class="i18n" data-k="cropGrapes"></span></span>
+            <span class="chip">🌿 <span class="i18n" data-k="cropGram"></span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card glow-red anim" style="margin-top:18px">
+        <div class="card-icon">⚠️</div>
+        <h3 class="i18n" data-k="doNow"></h3>
+        <div style="display:grid;gap:12px;margin-top:14px">
+          <div class="metric" style="display:flex;gap:14px;align-items:center;padding:16px 18px">
+            <span style="font-size:24px">1️⃣</span>
+            <span style="font-size:15.5px;font-weight:600" class="i18n" data-k="do1"></span>
+          </div>
+          <div class="metric" style="display:flex;gap:14px;align-items:center;padding:16px 18px">
+            <span style="font-size:24px">2️⃣</span>
+            <span style="font-size:15.5px;font-weight:600" class="i18n" data-k="do2"></span>
+          </div>
+          <div class="metric" style="display:flex;gap:14px;align-items:center;padding:16px 18px">
+            <span style="font-size:24px">3️⃣</span>
+            <span style="font-size:15.5px;font-weight:600" class="i18n" data-k="do3"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 8 · PANCHAYAT
+       ============================================================ -->
+  <section class="page" id="p-panchayat">
+    <div class="page-inner">
+      <div class="anim">
+        <div class="step-tag blue" id="pTag">🏛️ Panchayat · పంచాయత్</div>
+        <h2 class="big" id="pTitle">గ్రామ <span class="grad">అవలోకనం</span></h2>
+        <p class="sub-big" id="pSub">మీ పంచాయత్‌లోని అన్ని గ్రామాలు ఇప్పుడు ఎలా ఉన్నాయో చూడండి.</p>
+      </div>
+
+      <div class="grid g4 anim">
+        <div class="card stat glow-green"><div class="num"><span data-count="12">0</span></div><div class="lbl i18n" data-k="villages"></div></div>
+        <div class="card stat glow-blue"><div class="num"><span data-count="8">0</span></div><div class="lbl i18n" data-k="normal"></div></div>
+        <div class="card stat glow-amber"><div class="num amber"><span data-count="3">0</span></div><div class="lbl i18n" data-k="watch"></div></div>
+        <div class="card stat glow-red"><div class="num red"><span data-count="1">0</span></div><div class="lbl i18n" data-k="critical"></div></div>
+      </div>
+
+      <div class="card anim" style="margin-top:22px;padding:0;overflow:hidden">
+        <div style="padding:20px 22px;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h3 style="font-size:19px" id="vWxT"></h3>
+          <span class="badge info">Live</span>
+        </div>
+        <div class="tbl-wrap table-row-anim" style="border:none;border-radius:0;background:transparent">
+          <table>
+            <thead>
+              <tr>
+                <th class="i18n" data-k="village"></th>
+                <th class="i18n" data-k="tempCol"></th>
+                <th class="i18n" data-k="rainCol"></th>
+                <th class="i18n" data-k="risk"></th>
+                <th class="i18n" data-k="status"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><b>Gajwel</b></td><td>28°C</td><td>4.2 mm</td><td class="i18n" data-k="high"></td><td><span class="badge high i18n" data-k="alert"></span></td></tr>
+              <tr><td><b>Dubbak</b></td><td>27°C</td><td>6.1 mm</td><td class="i18n" data-k="high"></td><td><span class="badge high i18n" data-k="alert"></span></td></tr>
+              <tr><td><b>Siddipet</b></td><td>29°C</td><td>2.0 mm</td><td class="i18n" data-k="medium"></td><td><span class="badge med i18n" data-k="watch"></span></td></tr>
+              <tr><td><b>Husnabad</b></td><td>30°C</td><td>1.4 mm</td><td class="i18n" data-k="medium"></td><td><span class="badge med i18n" data-k="watch"></span></td></tr>
+              <tr><td><b>Cherial</b></td><td>31°C</td><td>0.8 mm</td><td class="i18n" data-k="low"></td><td><span class="badge low i18n" data-k="normal"></span></td></tr>
+              <tr><td><b>Narsapur</b></td><td>29°C</td><td>3.3 mm</td><td class="i18n" data-k="low"></td><td><span class="badge low i18n" data-k="normal"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid g2 anim" style="margin-top:18px">
+        <div class="card glow-green">
+          <div class="card-icon">📢</div>
+          <h3 class="i18n" data-k="sendAll"></h3>
+          <p style="margin-bottom:16px" class="i18n" data-k="sendAllSub"></p>
+          <button class="btn btn-primary btn-sm" onclick="showToast('📢')" class="i18n" data-k="sendSms"></button>
+        </div>
+        <div class="card glow-blue">
+          <div class="card-icon">👤</div>
+          <h3 class="i18n" data-k="officer"></h3>
+          <p><b style="color:var(--txt)">Shri. Ramesh Patil</b></p>
+          <p style="margin-top:5px">Sarpanch · Gajwel</p>
+          <p style="margin-top:8px">📞 +91 98XXX XXXXX</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 9 · REPORTS
+       ============================================================ -->
+  <section class="page" id="p-reports">
+    <div class="page-inner">
+      <div class="anim">
+        <div class="step-tag purple" id="rTag">📈 Reports · నివేదికలు</div>
+        <h2 class="big" id="rTitle">నివేదికలు &amp; <span class="grad">రికార్డులు</span></h2>
+        <p class="sub-big" id="rSub">పంట బీమా, ప్రభుత్వ పథకాలు లేదా ప్రణాళిక కోసం డేటా డౌన్‌లోడ్.</p>
+      </div>
+
+      <div class="grid g4 anim">
+        <div class="card stat glow-blue"><div class="num"><span data-count="184">0</span></div><div class="lbl i18n" data-k="reportsMade"></div></div>
+        <div class="card stat glow-green"><div class="num"><span data-count="1240">0</span></div><div class="lbl i18n" data-k="farmersHelped"></div></div>
+        <div class="card stat glow-amber"><div class="num amber"><span data-count="96">0</span>%</div><div class="lbl i18n" data-k="delivery"></div></div>
+        <div class="card stat glow-purple"><div class="num purple"><span data-count="25">0</span>yr</div><div class="lbl i18n" data-k="dataHistory"></div></div>
+      </div>
+
+      <div class="card anim" style="margin-top:22px">
+        <h3 style="font-size:19px;margin-bottom:6px" id="rChartT"></h3>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:12px" id="rChartS"></p>
+        <div class="chart">
+          <div class="col"><div class="bar-v" data-h="34%" data-v="34"></div><div class="lbl">Jun</div></div>
+          <div class="col"><div class="bar-v" data-h="72%" data-v="72"></div><div class="lbl">Jul</div></div>
+          <div class="col"><div class="bar-v" data-h="94%" data-v="94"></div><div class="lbl">Aug</div></div>
+          <div class="col"><div class="bar-v" data-h="86%" data-v="86"></div><div class="lbl">Sep</div></div>
+          <div class="col"><div class="bar-v" data-h="40%" data-v="40"></div><div class="lbl">Oct</div></div>
+          <div class="col"><div class="bar-v" data-h="14%" data-v="14"></div><div class="lbl">Nov</div></div>
+        </div>
+      </div>
+
+      <div class="grid g3 anim" style="margin-top:18px">
+        <div class="card glow-blue" style="cursor:pointer" onclick="showToast('📄')">
+          <div class="card-icon">📄</div>
+          <h3 class="i18n" data-k="weatherReport"></h3>
+          <p class="i18n" data-k="weatherReportSub"></p>
+        </div>
+        <div class="card glow-green" style="cursor:pointer" onclick="showToast('📄')">
+          <div class="card-icon">🌾</div>
+          <h3 class="i18n" data-k="cropReport"></h3>
+          <p class="i18n" data-k="cropReportSub"></p>
+        </div>
+        <div class="card glow-amber" style="cursor:pointer" onclick="showToast('📄')">
+          <div class="card-icon">🚨</div>
+          <h3 class="i18n" data-k="disasterReport"></h3>
+          <p class="i18n" data-k="disasterReportSub"></p>
+        </div>
+      </div>
+
+      <div class="anim" style="text-align:center;margin-top:28px">
+        <button class="btn btn-primary" onclick="jumpTo(0)" style="min-width:260px" id="startOverBtn"></button>
+      </div>
+
+      <div class="note anim" style="margin-top:22px;text-align:center">
+        <b>Panchayat Weather AI</b> · SIH26074<br>
+        🌾 <span class="i18n" data-k="footer"></span>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   PANCHAYAT WEATHER AI — SCRIPT
+   Profile-First · Auto-Voice · Top Nav · AI Week Guard
+   ============================================================ */
+
+const slider = document.getElementById('slider');
+const pages = [...document.querySelectorAll('.page')];
+const TOTAL = pages.length;
+let currentIdx = 0;
+let voiceEnabled = true;
+let voicePlaying = false;
+let userName = 'రాము';
+
+/* ============================================================
+   NAV & LABELS
+   ============================================================ */
+const NAV_ITEMS = {
+  te:[
+    {icon:'👤', label:'ప్రొఫైల్'},
+    {icon:'📍', label:'స్థానం'},
+    {icon:'🏠', label:'హోమ్'},
+    {icon:'🌤️', label:'వాతావరణం'},
+    {icon:'📅', label:'సూచన'},
+    {icon:'🛡️', label:'AI రక్షణ'},
+    {icon:'🚨', label:'హెచ్చరికలు'},
+    {icon:'🌱', label:'సలహా'},
+    {icon:'🏛️', label:'పంచాయత్'},
+    {icon:'📈', label:'నివేదికలు'}
+  ],
+  hi:[
+    {icon:'👤', label:'प्रोफ़ाइल'},
+    {icon:'📍', label:'स्थान'},
+    {icon:'🏠', label:'होम'},
+    {icon:'🌤️', label:'मौसम'},
+    {icon:'📅', label:'पूर्वानुमान'},
+    {icon:'🛡️', label:'AI सुरक्षा'},
+    {icon:'🚨', label:'चेतावनी'},
+    {icon:'🌱', label:'सलाह'},
+    {icon:'🏛️', label:'पंचायत'},
+    {icon:'📈', label:'रिपोर्ट'}
+  ],
+  en:[
+    {icon:'👤', label:'Profile'},
+    {icon:'📍', label:'Location'},
+    {icon:'🏠', label:'Home'},
+    {icon:'🌤️', label:'Weather'},
+    {icon:'📅', label:'Forecast'},
+    {icon:'🛡️', label:'AI Guard'},
+    {icon:'🚨', label:'Alerts'},
+    {icon:'🌱', label:'Advisory'},
+    {icon:'🏛️', label:'Panchayat'},
+    {icon:'📈', label:'Reports'}
+  ]
+};
+
+/* ============================================================
+   VOICE SCRIPTS — per page · per language (auto-spoken on page turn)
+   ============================================================ */
+const VOICE_SCRIPTS = {
+  0:{ te:'మీ ప్రొఫైల్ సెటప్ చేయండి. భాషను ఎంచుకోండి మరియు మీ పేరు ఇవ్వండి.',
+      hi:'अपनी प्रोफ़ाइल सेटअप करें। भाषा चुनें और अपना नाम दें।',
+      en:'Set up your profile. Choose your language and enter your name.' },
+  1:{ te:'మీ పొలం స్థానాన్ని కనుగొనడానికి GPS బటన్ నొక్కండి.',
+      hi:'अपने खेत का स्थान खोजने के लिए GPS बटन दबाएं.',
+      en:'Tap the GPS button to find your farm location.' },
+  2:{ te:'ఇది మీ హోమ్ డాష్‌బోర్డ్. ఈ రోజు వాతావరణం చూడండి. కింద AI రక్షణ కార్డ్ ఉంది.',
+      hi:'यह आपका होम डैशबोर्ड है। आज का मौसम देखें। नीचे AI सुरक्षा कार्ड है।',
+      en:'This is your home dashboard. See today weather. AI Guard card is below.' },
+  3:{ te:'ప్రస్తుత వాతావరణం. ఉష్ణోగ్రత, తేమ మరియు మరిన్ని వివరాలు.',
+      hi:'वर्तमान मौसम। तापमान, नमी और अधिक विवरण.',
+      en:'Current weather. Temperature, humidity and more details.' },
+  4:{ te:'ఏడు రోజుల వాతావరణ సూచన. మీ పొలం పని ప్లాన్ చేయండి.',
+      hi:'सात दिन का पूर्वानुमान. अपने खेत का काम योजना बनाएं.',
+      en:'Seven day forecast. Plan your field work.' },
+  5:{ te:'AI ఒక వారం ముందుగానే హెచ్చరిస్తుంది. ఏ రోజు ఏమి జాగ్రత్త తీసుకోవాలో చూడండి.',
+      hi:'AI एक हफ्ते पहले चेतावनी देता है. देखें किस दिन क्या सावधानी रखें.',
+      en:'AI warns one week ahead. See what to protect on which day.' },
+  6:{ te:'ముఖ్యమైన హెచ్చరికలు. ఎరుపు ప్రమాదం, ఆకుపచ్చ సురక్షితం.',
+      hi:'महत्वपूर्ण चेतावनी. लाल खतरा है, हरा सुरक्षित है.',
+      en:'Important alerts. Red is danger, green is safe.' },
+  7:{ te:'ఈ వారం ఏమి చేయాలి. నీరు, ఎరువులు మరియు పంటలపై సలహా.',
+      hi:'इस हफ्ते क्या करें. पानी, खाद और फसल पर सलाह.',
+      en:'What to do this week. Advice on water, fertiliser and crops.' },
+  8:{ te:'పంచాయత్ అవలోకనం. అన్ని గ్రామాల వాతావరణ స్థితి.',
+      hi:'पंचायत अवलोकन. सभी गाँव की मौसम स्थिति.',
+      en:'Panchayat overview. Weather status of all villages.' },
+  9:{ te:'నివేదికలు మరియు రికార్డులు. బీమా మరియు పథకాల కోసం డేటా.',
+      hi:'रिपोर्ट और रिकॉर्ड. बीमा और योजनाओं के लिए डेटा.',
+      en:'Reports and records. Data for insurance and schemes.' }
+};
+
+/* ============================================================
+   UI TRANSLATIONS
+   ============================================================ */
+const T = {
+  te:{
+    /* profile */
+    profStepTag:'ప్రొఫైల్ · Profile',
+    profTitle:'మీ <span class="grad">వివరాలు నింపండి</span>',
+    profSub:'మీకు బాగా అర్థమయ్యే భాషను ఎంచుకోండి · మీ పేరు మరియు ఫోన్ నంబర్ ఇవ్వండి',
+    profLangLbl:'భాషను ఎంచుకోండి',
+    lblName:'మీ పేరు',
+    lblPhone:'ఫోన్ నంబర్',
+    startBtn:'ప్రారంభించండి · Get Started →',
+
+    /* location */
+    locStepTag:'📍 Location · స్థానం',
+    locTitle:'మీ పొలం <span class="grad">ఎక్కడ ఉంది?</span>',
+    locSub:'GPS బటన్ నొక్కండి — మీ గ్రామం ఆటోమేటిక్‌గా కనుగొంటాము.',
+    gpsBtnTxt:'GPS తో నా స్థానం కనుగొనండి',
+    gpsFound:'స్థానం కనుగొనబడింది',
+    gpsSearching:'GPS ఉపగ్రహానికి కనెక్ట్ అవుతోంది…',
+    gpsReading:'మీ కోఆర్డినేట్లు చదువుతోంది…',
+    gpsMatching:'గ్రామ డేటాబేస్‌కు సరిపోలుతోంది…',
+    orDiv:'లేదా మాన్యువల్‌గా ఎంచుకోండి',
+    lblState:'రాష్ట్రం',
+    lblDistrict:'జిల్లా',
+    lblVillage:'గ్రామం',
+    confirmBtn:'✅ నిర్ధారించి కొనసాగించండి',
+
+    /* dashboard */
+    dashTag:'🏠 Home · హోమ్',
+    todayLbl:'ఈ రోజు',
+    dashDesc:'పాక్షికంగా మేఘావృతం · 31°C అనుభూతి',
+    greetingPrefix:'నమస్కారం',
+    greetingFarmer:'రైతు',
+
+    /* AI guard mini */
+    guardBadge:'AI చేత సిద్ధం',
+    guardTitle:'వారం ముందు రక్షణ',
+    guardPreview:'AI ఒక వారం ముందుగానే మీ పంటకు ఏమి జరుగుతుందో చెబుతుంది. ఏ రోజు ఏ జాగ్రత్త తీసుకోవాలో తెలుసుకోండి.',
+    guardOpen:'వారం రక్షణ చూడండి',
+
+    /* weather */
+    wTag:'🌤️ Weather · వాతావరణం',
+    wTitle:'ఈ రోజు <span class="grad">వాతావరణం</span>',
+    wSub:'సమీప వాతావరణ కేంద్రం నుండి ప్రత్యక్ష రీడింగ్‌లు.',
+    wCond:'తేలికపాటి వర్షం ఆశించబడుతోంది',
+    wRange:'అధిక 32° · తక్కువ 21° · అనుభూతి 31°',
+    wUpdated:'4 నిమిషాల క్రితం నవీకరించబడింది',
+    wAQ:'గాలి నాణ్యత మంచిది',
+    hNext:'⏰ తదుపరి గంటలు',
+    hDetails:'📊 మరిన్ని వివరాలు',
+    uvLbl:'అధిక',
+
+    /* forecast */
+    fTag:'📅 Forecast · సూచన',
+    fTitle:'తదుపరి <span class="grad">7 రోజులు</span>',
+    fSub:'వారంలో విత్తడం, నీరు, స్ప్రే, కోత ప్లాన్ చేయండి.',
+    fcChartT:'🌧️ ఆశించిన వర్షం (మిమీ)',
+    fcChartS:'వచ్చే వారానికి రోజువారీ వర్ష సూచన',
+
+    /* AI guard page */
+    guardTag:'🛡️ AI Guard · రక్షణ',
+    guardH:'AI ఒక వారం <span class="grad">ముందుగానే చెబుతుంది</span>',
+    guardP:'మీ పంటను రక్షించడానికి ఏడు రోజుల ముందస్తు సమాచారం.',
+    guardIntroBadge:'AI చేత సిద్ధం',
+    guardIntroMsg:'వచ్చే వారంలో మీ గ్రామంలో ఏమి జరుగుతుందో AI ఇప్పుడే చెబుతోంది. ఏ రోజు ఏమి జాగ్రత్త తీసుకోవాలో కింద చూడండి.',
+    guardHow:'AI 25 సంవత్సరాల వాతావరణ డేటాను, ఉపగ్రహ చిత్రాలను మరియు స్థానిక సెన్సార్లను కలిపి ఒక వారం ముందుగానే మీ పంటకు రక్షణ సూచనలు ఇస్తుంది.',
+
+    /* alerts */
+    aTag:'🚨 Alerts · హెచ్చరికలు',
+    aTitle:'ముఖ్యమైన <span class="grad">హెచ్చరికలు</span>',
+    aSub:'మీ ఫోన్‌కు మీ భాషలో హెచ్చరికలు.',
+    high:'అధిక', medium:'మధ్యస్థ', low:'తక్కువ', advisories:'సలహాలు', advisory:'సలహా', alert:'హెచ్చరిక',
+    aHeavy:'భారీ వర్ష హెచ్చరిక',
+    aHeavyMsg:'తర్వాతి 48 గంటల్లో 45–60 మిమీ వర్షం. పంటలు కప్పండి.',
+    aTime1:'2 గంటల క్రితం జారీ',
+    aWind:'బలమైన గాలులు',
+    aWindMsg:'45–55 కిమీ/గం గాలులు. అరటి, చెరకు కాపాడండి.',
+    aTime2:'5 గంటల క్రితం జారీ',
+    aCold:'చల్లని రాత్రి',
+    aColdMsg:'రాత్రి ఉష్ణోగ్రత 14°C కి పడవచ్చు. నార్సరీ మొక్కలు కాపాడండి.',
+    aTime3:'8 గంటల క్రితం జారీ',
+    aPest:'పురుగు ప్రమాదం',
+    aPestMsg:'తేమ వల్ల అఫిడ్స్ మరియు బూజు వచ్చే అవకాశం. పంటను గమనించండి.',
+    aTime4:'నిన్న జారీ',
+    aIrrig:'నీటిపారుదల సలహా',
+    aIrrigMsg:'నేల తేమ బాగుంది. తదుపరి నీటిపారుదల దాటవేయండి.',
+    aTime5:'2 రోజుల క్రితం జారీ',
+
+    /* advisory */
+    advTag:'🌱 Advisory · సలహా',
+    advTitle:'ఈ వారం <span class="grad">ఏమి చేయాలి</span>',
+    advSub:'పంటలు, నీరు, ఎరువులపై సరళమైన సలహా.',
+    waterIrr:'నీరు / నీటిపారుదల',
+    waterAdv:'3 రోజులు నీరు పెట్టవద్దు — 71 మిమీ వర్షం వస్తోంది.',
+    soilMoist:'నేల తేమ', waterSaved:'ఆదా చేసిన నీరు',
+    fertiliser:'ఎరువులు',
+    fertAdv:'గురువారం వరకు యూరియా వాయిదా వేయండి — వర్షం కడిగేస్తుంది.',
+    nitrogen:'నత్రజని అవసరం', washRisk:'కడిగే ప్రమాదం',
+    pestWatch:'పురుగు పర్యవేక్షణ',
+    pestAdv:'తేమ వల్ల గ్రామ్ మరియు గ్రేప్స్‌లో అఫిడ్స్, బూజు రావచ్చు.',
+    aphidRisk:'అఫిడ్ ప్రమాదం', mildewRisk:'బూజు ప్రమాదం',
+    bestCrops:'ఇప్పుడు ఉత్తమ పంటలు', cropsSub:'మీ నేల మరియు వర్ష సూచన ఆధారంగా.',
+    cropWheat:'గోధుమ', cropOnion:'ఉల్లి', cropGrapes:'ద్రాక్ష', cropGram:'శనగ',
+    doNow:'ఇప్పుడు ఇది చేయండి',
+    do1:'మంగళవారం ముందు డ్రైనేజీ కాలువలు శుభ్రం చేయండి.',
+    do2:'కోసిన సంచులను కప్పిన ఎత్తైన ప్రదేశానికి మార్చండి.',
+    do3:'గురువారం వరకు పురుగుమందులు చల్లవద్దు.',
+
+    /* panchayat */
+    pTag:'🏛️ Panchayat · పంచాయత్',
+    pTitle:'గ్రామ <span class="grad">అవలోకనం</span>',
+    pSub:'మీ పంచాయత్‌లోని అన్ని గ్రామాలు ఇప్పుడు ఎలా ఉన్నాయో చూడండి.',
+    villages:'గ్రామాలు', normal:'సాధారణ', watch:'పర్యవేక్షణ', critical:'క్లిష్టమైన',
+    village:'గ్రామం', tempCol:'ఉష్ణో', rainCol:'వర్షం', risk:'ప్రమాదం', status:'స్థితి',
+    sendAll:'అందరికీ సందేశం పంపండి',
+    sendAllSub:'ఈ పంచాయత్‌లోని ప్రతి రైతుకు సలహా ప్రసారం చేయండి.',
+    sendSms:'SMS పంపండి',
+    officer:'పంచాయత్ అధికారి',
+    vWxT:'🏘️ గ్రామ వాతావరణం',
+
+    /* reports */
+    rTag:'📈 Reports · నివేదికలు',
+    rTitle:'నివేదికలు &amp; <span class="grad">రికార్డులు</span>',
+    rSub:'పంట బీమా, ప్రభుత్వ పథకాలు లేదా ప్రణాళిక కోసం డేటా డౌన్‌లోడ్.',
+    reportsMade:'నివేదికలు తయారు', farmersHelped:'సహాయం పొందిన రైతులు',
+    delivery:'డెలివరీ', dataHistory:'డేటా చరిత్ర',
+    rChartT:'📊 నెలవారీ వర్షం — చివరి 6 నెలలు',
+    rChartS:'25 సంవత్సరాల సగటుతో పోల్చబడింది',
+    weatherReport:'వాతావరణ నివేదిక',
+    weatherReportSub:'నెలవారీ ఉష్ణోగ్రత, వర్షం, తేమ సారాంశం.',
+    cropReport:'పంట నివేదిక',
+    cropReportSub:'పంట వారీగా సలహా చరిత్ర మరియు ఫలితాలు.',
+    disasterReport:'విపత్తు నివేదిక',
+    disasterReportSub:'హెచ్చరిక లాగ్ మరియు ప్రతిస్పందన సమయం.',
+    startOver:'మళ్ళీ ప్రారంభించండి',
+    footer:'ప్రతి భారతీయ రైతుకు వాతావరణ సమాచారం'
+  },
+  hi:{
+    profStepTag:'प्रोफ़ाइल · Profile',
+    profTitle:'अपनी <span class="grad">जानकारी भरें</span>',
+    profSub:'वह भाषा चुनें जो आप अच्छी तरह समझते हैं · अपना नाम और फ़ोन नंबर दें',
+    profLangLbl:'भाषा चुनें',
+    lblName:'आपका नाम',
+    lblPhone:'फ़ोन नंबर',
+    startBtn:'शुरू करें · Get Started →',
+
+    locStepTag:'📍 Location · स्थान',
+    locTitle:'आपका खेत <span class="grad">कहाँ है?</span>',
+    locSub:'GPS बटन दबाएं — हम आपका गाँव स्वचालित रूप से खोजेंगे.',
+    gpsBtnTxt:'GPS से मेरा स्थान खोजें',
+    gpsFound:'स्थान मिला',
+    gpsSearching:'GPS उपग्रह से जुड़ रहा है…',
+    gpsReading:'आपके निर्देशांक पढ़ रहा है…',
+    gpsMatching:'गाँव डेटाबेस से मिला रहा है…',
+    orDiv:'या मैन्युअल चुनें',
+    lblState:'राज्य',
+    lblDistrict:'जिला',
+    lblVillage:'गाँव',
+    confirmBtn:'✅ पुष्टि करें और जारी रखें',
+
+    dashTag:'🏠 Home · होम',
+    todayLbl:'आज',
+    dashDesc:'आंशिक बादल · 31°C महसूस',
+    greetingPrefix:'नमस्ते',
+    greetingFarmer:'किसान',
+
+    guardBadge:'AI द्वारा तैयार',
+    guardTitle:'एक हफ्ते पहले सुरक्षा',
+    guardPreview:'AI एक हफ्ते पहले बताता है आपकी फसल को क्या होगा. जानें किस दिन क्या सावधानी रखें.',
+    guardOpen:'सप्ताह सुरक्षा देखें',
+
+    wTag:'🌤️ Weather · मौसम',
+    wTitle:'आज का <span class="grad">मौसम</span>',
+    wSub:'निकटतम मौसम केंद्र से लाइव रीडिंग.',
+    wCond:'हल्की बारिश की संभावना',
+    wRange:'अधिकतम 32° · न्यूनतम 21° · महसूस 31°',
+    wUpdated:'4 मिनट पहले अपडेट',
+    wAQ:'हवा की गुणवत्ता अच्छी',
+    hNext:'⏰ अगले घंटे',
+    hDetails:'📊 अधिक विवरण',
+    uvLbl:'उच्च',
+
+    fTag:'📅 Forecast · पूर्वानुमान',
+    fTitle:'अगले <span class="grad">7 दिन</span>',
+    fSub:'सप्ताह में बुवाई, सिंचाई, छिड़काव, कटाई की योजना बनाएं.',
+    fcChartT:'🌧️ अपेक्षित बारिश (मिमी)',
+    fcChartS:'आने वाले सप्ताह का दैनिक बारिश पूर्वानुमान',
+
+    guardTag:'🛡️ AI Guard · सुरक्षा',
+    guardH:'AI एक हफ्ते <span class="grad">पहले बताता है</span>',
+    guardP:'आपकी फसल की सुरक्षा के लिए सात दिन पहले की जानकारी.',
+    guardIntroBadge:'AI द्वारा तैयार',
+    guardIntroMsg:'आने वाले सप्ताह में आपके गाँव में क्या होगा, AI अभी बता रहा है. देखें किस दिन क्या सावधानी रखें.',
+    guardHow:'AI 25 साल के मौसम डेटा, उपग्रह चित्रों और स्थानीय सेंसर को मिलाकर एक हफ्ते पहले आपकी फसल के लिए सुरक्षा सलाह देता है.',
+
+    aTag:'🚨 Alerts · चेतावनी',
+    aTitle:'महत्वपूर्ण <span class="grad">चेतावनी</span>',
+    aSub:'आपके फोन पर आपकी भाषा में चेतावनी.',
+    high:'उच्च', medium:'मध्यम', low:'कम', advisories:'सलाह', advisory:'सलाह', alert:'चेतावनी',
+    aHeavy:'भारी बारिश की चेतावनी',
+    aHeavyMsg:'अगले 48 घंटों में 45–60 मिमी बारिश. फसल ढकें.',
+    aTime1:'2 घंटे पहले जारी',
+    aWind:'तेज हवाएं',
+    aWindMsg:'45–55 किमी/घंटा हवाएं. केला, गन्ना सुरक्षित करें.',
+    aTime2:'5 घंटे पहले जारी',
+    aCold:'ठंडी रात',
+    aColdMsg:'रात का तापमान 14°C तक गिर सकता है. नर्सरी पौधे बचाएं.',
+    aTime3:'8 घंटे पहले जारी',
+    aPest:'कीट का खतरा',
+    aPestMsg:'नमी से ग्राम और अंगूर में एफिड और फंगस हो सकता है.',
+    aTime4:'कल जारी',
+    aIrrig:'सिंचाई सलाह',
+    aIrrigMsg:'मिट्टी में नमी अच्छी है. अगली सिंचाई छोड़ें.',
+    aTime5:'2 दिन पहले जारी',
+
+    advTag:'🌱 Advisory · सलाह',
+    advTitle:'इस हफ्ते <span class="grad">क्या करें</span>',
+    advSub:'फसल, पानी, खाद पर सरल सलाह.',
+    waterIrr:'पानी / सिंचाई',
+    waterAdv:'3 दिन पानी न डालें — 71 मिमी बारिश आ रही है.',
+    soilMoist:'मिट्टी की नमी', waterSaved:'पानी बचाया',
+    fertiliser:'खाद',
+    fertAdv:'गुरुवार तक यूरिया रोकें — बारिश बहा देगी.',
+    nitrogen:'नाइट्रोजन जरूरत', washRisk:'बहाव का खतरा',
+    pestWatch:'कीट निगरानी',
+    pestAdv:'नमी से ग्राम और अंगूर में एफिड, फंगस हो सकता है.',
+    aphidRisk:'एफिड खतरा', mildewRisk:'फंगस खतरा',
+    bestCrops:'अभी सर्वोत्तम फसलें', cropsSub:'आपकी मिट्टी और बारिश के आधार पर.',
+    cropWheat:'गेहूं', cropOnion:'प्याज', cropGrapes:'अंगूर', cropGram:'चना',
+    doNow:'अब यह करें',
+    do1:'मंगलवार से पहले जल निकासी नालियां साफ करें.',
+    do2:'कटी हुई बोरियां ढकी, ऊंची जगह पर रखें.',
+    do3:'गुरुवार तक कीटनाशक न छिड़कें.',
+
+    pTag:'🏛️ Panchayat · पंचायत',
+    pTitle:'गाँव का <span class="grad">अवलोकन</span>',
+    pSub:'देखें आपकी पंचायत के सभी गाँव अभी कैसे हैं.',
+    villages:'गाँव', normal:'सामान्य', watch:'निगरानी', critical:'गंभीर',
+    village:'गाँव', tempCol:'तापमान', rainCol:'बारिश', risk:'जोखिम', status:'स्थिति',
+    sendAll:'सभी को संदेश भेजें',
+    sendAllSub:'इस पंचायत के हर किसान को सलाह प्रसारित करें.',
+    sendSms:'SMS भेजें',
+    officer:'पंचायत अधिकारी',
+    vWxT:'🏘️ गाँव का मौसम',
+
+    rTag:'📈 Reports · रिपोर्ट',
+    rTitle:'रिपोर्ट &amp; <span class="grad">रिकॉर्ड</span>',
+    rSub:'फसल बीमा, सरकारी योजना या योजना के लिए डेटा डाउनलोड.',
+    reportsMade:'रिपोर्ट बनी', farmersHelped:'किसानों की मदद',
+    delivery:'डिलीवरी', dataHistory:'डेटा इतिहास',
+    rChartT:'📊 मासिक बारिश — पिछले 6 महीने',
+    rChartS:'25 साल के औसत से तुलना',
+    weatherReport:'मौसम रिपोर्ट',
+    weatherReportSub:'मासिक तापमान, बारिश और नमी सारांश.',
+    cropReport:'फसल रिपोर्ट',
+    cropReportSub:'फसल-वार सलाह इतिहास और परिणाम.',
+    disasterReport:'आपदा रिपोर्ट',
+    disasterReportSub:'चेतावनी लॉग और प्रतिक्रिया समय.',
+    startOver:'फिर से शुरू करें',
+    footer:'हर भारतीय किसान के लिए मौसम जानकारी'
+  },
+  en:{
+    profStepTag:'Profile · Setup',
+    profTitle:'Fill Your <span class="grad">Details</span>',
+    profSub:'Choose the language you understand best · Enter your name and phone number',
+    profLangLbl:'Choose Language',
+    lblName:'Your Name',
+    lblPhone:'Phone Number',
+    startBtn:'Get Started →',
+
+    locStepTag:'📍 Location',
+    locTitle:'Where Is Your <span class="grad">Farm?</span>',
+    locSub:'Tap the GPS button — we will find your village automatically.',
+    gpsBtnTxt:'Find My Location with GPS',
+    gpsFound:'Location Found',
+    gpsSearching:'Connecting to GPS satellite…',
+    gpsReading:'Reading your coordinates…',
+    gpsMatching:'Matching to village database…',
+    orDiv:'Or choose manually',
+    lblState:'State',
+    lblDistrict:'District',
+    lblVillage:'Village',
+    confirmBtn:'✅ Confirm & Continue',
+
+    dashTag:'🏠 Home',
+    todayLbl:'Today',
+    dashDesc:'Partly cloudy · Feels 31°C',
+    greetingPrefix:'Hello',
+    greetingFarmer:'Farmer',
+
+    guardBadge:'Prepared by AI',
+    guardTitle:'Week Ahead Protection',
+    guardPreview:'AI tells you one week early what will happen to your crop. Learn what to protect on which day.',
+    guardOpen:'View Week Guard',
+
+    wTag:'🌤️ Weather',
+    wTitle:"Today's <span class=\"grad\">Weather</span>",
+    wSub:'Live readings from the nearest weather station.',
+    wCond:'Light showers expected',
+    wRange:'High 32° · Low 21° · Feels 31°',
+    wUpdated:'Updated 4 min ago',
+    wAQ:'Air Quality Good',
+    hNext:'⏰ Next Hours',
+    hDetails:'📊 More Details',
+    uvLbl:'High',
+
+    fTag:'📅 Forecast',
+    fTitle:'Next <span class="grad">7 Days</span>',
+    fSub:'Plan sowing, watering, spraying and harvest with the week ahead.',
+    fcChartT:'🌧️ Rain Expected (mm)',
+    fcChartS:'Daily rain forecast for the coming week',
+
+    guardTag:'🛡️ AI Guard',
+    guardH:'AI Warns <span class="grad">One Week Early</span>',
+    guardP:'Seven-day advance protection intimation for your crop.',
+    guardIntroBadge:'Prepared by AI',
+    guardIntroMsg:'AI is telling you right now what will happen in your village this week. See what to protect on which day below.',
+    guardHow:'AI combines 25 years of weather data, satellite images and local sensors to give your crop protection advice one week in advance.',
+
+    aTag:'🚨 Alerts',
+    aTitle:'Important <span class="grad">Alerts</span>',
+    aSub:'Warnings sent to your phone in your language.',
+    high:'High', medium:'Medium', low:'Low', advisories:'Advisories', advisory:'Advisory', alert:'Alert',
+    aHeavy:'Heavy Rainfall Warning',
+    aHeavyMsg:'45–60 mm rain in next 48 hours. Cover crops and clear drainage.',
+    aTime1:'Issued 2 hours ago',
+    aWind:'Strong Winds Coming',
+    aWindMsg:'Wind 45–55 km/h likely. Secure banana and sugarcane.',
+    aTime2:'Issued 5 hours ago',
+    aCold:'Cold Night Ahead',
+    aColdMsg:'Night temp may fall to 14°C. Protect nursery seedlings.',
+    aTime3:'Issued 8 hours ago',
+    aPest:'Pest Risk',
+    aPestMsg:'Humidity favours aphids in gram and mustard.',
+    aTime4:'Issued yesterday',
+    aIrrig:'Irrigation Advisory',
+    aIrrigMsg:'Soil moisture is good. Skip the next irrigation.',
+    aTime5:'Issued 2 days ago',
+
+    advTag:'🌱 Advisory',
+    advTitle:'What To Do <span class="grad">This Week</span>',
+    advSub:'Simple, weather-aware advice for crops, water and fertiliser.',
+    waterIrr:'Water / Irrigation',
+    waterAdv:'Skip watering for 3 days — 71 mm rain is coming.',
+    soilMoist:'Soil Moisture', waterSaved:'Water Saved',
+    fertiliser:'Fertiliser',
+    fertAdv:'Delay urea until Thursday — rain will wash it away.',
+    nitrogen:'Nitrogen Needed', washRisk:'Wash-away Risk',
+    pestWatch:'Pest Watch',
+    pestAdv:'Humidity may bring aphids and mildew in gram and grapes.',
+    aphidRisk:'Aphid Risk', mildewRisk:'Mildew Risk',
+    bestCrops:'Best Crops Now', cropsSub:'Based on your soil and rain outlook.',
+    cropWheat:'Wheat', cropOnion:'Onion', cropGrapes:'Grapes', cropGram:'Gram',
+    doNow:'Do This Now',
+    do1:'Clear drainage channels before Tuesday.',
+    do2:'Move harvested bags to a covered, raised spot.',
+    do3:'Wait until Thursday to spray pesticides.',
+
+    pTag:'🏛️ Panchayat',
+    pTitle:'Village <span class="grad">Overview</span>',
+    pSub:'See how all villages in your Panchayat are doing right now.',
+    villages:'Villages', normal:'Normal', watch:'Watch', critical:'Critical',
+    village:'Village', tempCol:'Temp', rainCol:'Rain', risk:'Risk', status:'Status',
+    sendAll:'Send Message to All',
+    sendAllSub:'Broadcast an advisory to every farmer in this Panchayat.',
+    sendSms:'Send SMS',
+    officer:'Panchayat Officer',
+    vWxT:'🏘️ Village Weather',
+
+    rTag:'📈 Reports',
+    rTitle:'Reports &amp; <span class="grad">Records</span>',
+    rSub:'Download data for crop insurance, government schemes or planning.',
+    reportsMade:'Reports Made', farmersHelped:'Farmers Helped',
+    delivery:'Delivery', dataHistory:'Data History',
+    rChartT:'📊 Monthly Rain — Last 6 Months',
+    rChartS:'Compared to the 25-year average',
+    weatherReport:'Weather Report',
+    weatherReportSub:'Monthly temperature, rain and humidity summary.',
+    cropReport:'Crop Report',
+    cropReportSub:'Crop-wise advice history and results.',
+    disasterReport:'Disaster Report',
+    disasterReportSub:'Alert log and response time summary.',
+    startOver:'Start Over',
+    footer:'Weather intelligence for every Indian farmer'
+  }
+};
+
+/* ============================================================
+   BASIC WORDS (small labels reused everywhere)
+   ============================================================ */
+const BASE_WORDS = {
+  te:{ humidity:'తేమ', wind:'గాలి', rain:'వర్షం', soil:'నేల', feels:'అనుభూతి',
+       pressure:'ఒత్తిడి', visibility:'దృశ్యమానత', dew:'మంచు',
+       sunrise:'సూర్యోదయం', sunset:'సూర్యాస్తమయం' },
+  hi:{ humidity:'नमी', wind:'हवा', rain:'बारिश', soil:'मिट्टी', feels:'महसूस',
+       pressure:'दबाव', visibility:'दृश्यता', dew:'ओस',
+       sunrise:'सूर्योदय', sunset:'सूर्यास्त' },
+  en:{ humidity:'Humidity', wind:'Wind', rain:'Rain', soil:'Soil', feels:'Feels',
+       pressure:'Pressure', visibility:'Visibility', dew:'Dew',
+       sunrise:'Sunrise', sunset:'Sunset' }
+};
+
+/* Greetings */
+const GREETINGS = {
+  te:{ hello:'నమస్కారం', farmer:'రైతు' },
+  hi:{ hello:'नमस्ते', farmer:'किसान' },
+  en:{ hello:'Hello', farmer:'Farmer' }
+};
+
+/* Day names */
+const DAYS = {
+  te:{ mon:'సోమ', tue:'మంగళ', wed:'బుధ', thu:'గురు', fri:'శుక్ర', sat:'శని', sun:'ఆది' },
+  hi:{ mon:'सोम', tue:'मंगल', wed:'बुध', thu:'गुरु', fri:'शुक्र', sat:'शनि', sun:'रवि' },
+  en:{ mon:'Mon', tue:'Tue', wed:'Wed', thu:'Thu', fri:'Fri', sat:'Sat', sun:'Sun' }
+};
+
+/* ============================================================
+   AI WEEK GUARD DATA
+   ============================================================ */
+const GUARD_DATA = {
+  te:[
+    { day:'mon', em:'🌧️', title:'భారీ వర్షం', sev:'high',
+      msg:'సోమవారం 18 మిమీ వర్షం. పంట కోత వాయిదా వేయండి. డ్రైనేజీ కాలువలు శుభ్రం చేయండి.' },
+    { day:'tue', em:'⛈️', title:'ఉరుములతో వర్షం', sev:'high',
+      msg:'మంగళవారం 28 మిమీ భారీ వర్షం. పశువులను షెడ్‌లో ఉంచండి. పురుగుమందులు చల్లవద్దు.' },
+    { day:'wed', em:'🌦️', title:'మితమైన వర్షం', sev:'med',
+      msg:'బుధవారం 12 మిమీ వర్షం. యూరియా వేయడం మంచిది. నీటిపారుదల దాటవేయండి.' },
+    { day:'thu', em:'⛅', title:'మేఘావృతం', sev:'low',
+      msg:'గురువారం మేఘావృతం. పిచికారీకి మంచి రోజు. పంట తనిఖీ చేయండి.' },
+    { day:'fri', em:'☀️', title:'ఎండ రోజు', sev:'med',
+      msg:'శుక్రవారం 33°C వేడి. ఉదయం లేదా సాయంత్రం నీరు పెట్టండి. మధ్యాహ్నం పని మానండి.' },
+    { day:'sat', em:'☀️', title:'అధిక వేడి', sev:'high',
+      msg:'శనివారం 34°C అధిక ఉష్ణోగ్రత. పశువులకు నీడ మరియు నీరు ఇవ్వండి.' },
+    { day:'sun', em:'⛅', title:'మేఘాలు', sev:'low',
+      msg:'ఆదివారం మేఘావృతం. వారం పని ప్లాన్ చేయండి. పంట పరిస్థితి సమీక్షించండి.' }
+  ],
+  hi:[
+    { day:'mon', em:'🌧️', title:'भारी बारिश', sev:'high',
+      msg:'सोमवार को 18 मिमी बारिश. फसल कटाई टालें. जल निकासी नालियां साफ करें.' },
+    { day:'tue', em:'⛈️', title:'आंधी-बारिश', sev:'high',
+      msg:'मंगलवार को 28 मिमी भारी बारिश. पशुओं को शेड में रखें. कीटनाशक न छिड़कें.' },
+    { day:'wed', em:'🌦️', title:'हल्की बारिश', sev:'med',
+      msg:'बुधवार को 12 मिमी बारिश. यूरिया डालना ठीक. सिंचाई छोड़ें.' },
+    { day:'thu', em:'⛅', title:'बादल', sev:'low',
+      msg:'गुरुवार बादल छाएंगे. छिड़काव के लिए अच्छा दिन. फसल जांचें.' },
+    { day:'fri', em:'☀️', title:'धूप', sev:'med',
+      msg:'शुक्रवार 33°C गर्मी. सुबह या शाम पानी दें. दोपहर काम टालें.' },
+    { day:'sat', em:'☀️', title:'अधिक गर्मी', sev:'high',
+      msg:'शनिवार 34°C अधिक तापमान. पशुओं को छाया और पानी दें.' },
+    { day:'sun', em:'⛅', title:'बादल', sev:'low',
+      msg:'रविवार बादल. अगले हफ्ते की योजना बनाएं. फसल समीक्षा करें.' }
+  ],
+  en:[
+    { day:'mon', em:'🌧️', title:'Heavy Rain', sev:'high',
+      msg:'Monday: 18 mm rain. Delay harvesting. Clear drainage channels.' },
+    { day:'tue', em:'⛈️', title:'Thunderstorms', sev:'high',
+      msg:'Tuesday: 28 mm heavy rain. Keep cattle in shed. Do not spray pesticide.' },
+    { day:'wed', em:'🌦️', title:'Light Rain', sev:'med',
+      msg:'Wednesday: 12 mm rain. Good for urea. Skip irrigation.' },
+    { day:'thu', em:'⛅', title:'Cloudy', sev:'low',
+      msg:'Thursday: cloudy. Good day for spraying. Inspect your crop.' },
+    { day:'fri', em:'☀️', title:'Sunny', sev:'med',
+      msg:'Friday: 33°C hot. Water in morning or evening. Avoid noon work.' },
+    { day:'sat', em:'☀️', title:'Extreme Heat', sev:'high',
+      msg:'Saturday: 34°C high temp. Give cattle shade and water.' },
+    { day:'sun', em:'⛅', title:'Cloudy', sev:'low',
+      msg:'Sunday: cloudy. Plan next week. Review crop condition.' }
+  ]
+};
+
+/* ============================================================
+   LOCATION DATA
+   ============================================================ */
+const LOCATION_DATA = {
+  'Maharashtra': {
+    'Nashik':      ['Pimpalgaon Basvant','Ozar','Dindori','Niphad','Yeola','Lasalgaon','Peth'],
+    'Pune':        ['Baramati','Junnar','Indapur','Shirur','Daund'],
+    'Nagpur':      ['Kamptee','Katol','Kalmeshwar','Hingna','Umred'],
+    'Aurangabad':  ['Paithan','Gangapur','Kannad','Sillod','Vaijapur'],
+    'Solapur':     ['Barshi','Pandharpur','Akkalkot','Madha','Karmala']
+  },
+  'Telangana': {
+    'Hyderabad':   ['Charminar','Secunderabad','Kukatpally','LB Nagar','Uppal'],
+    'Siddipet':    ['Siddipet','Gajwel','Dubbak','Husnabad','Cherial'],
+    'Medak':       ['Medak','Narsapur','Toopran','Ramayampet','Shivampet'],
+    'Karimnagar':  ['Karimnagar','Huzurabad','Jammikunta','Choppadandi','Veenavanka'],
+    'Sircilla':    ['Sircilla','Vemulawada','Konaraopet','Yellareddypet','Mustabad'],
+    'Nizamabad':   ['Nizamabad','Bodhan','Armoor','Banswada','Kamareddy']
+  },
+  'Karnataka': {
+    'Bangalore':   ['Anekal','Devanahalli','Doddaballapur','Hoskote','Nelamangala'],
+    'Mysore':      ['Nanjangud','Hunsur','T. Narasipur','K.R. Nagar','Periyapatna'],
+    'Belgaum':     ['Athani','Bailhongal','Chikodi','Gokak','Ramdurg'],
+    'Hubli':       ['Kalghatgi','Kundgol','Navalgund','Shiggaon','Savadatti']
+  },
+  'Tamil Nadu': {
+    'Chennai':     ['Ambattur','Avadi','Tambaram','Poonamallee','Madhavaram'],
+    'Coimbatore':  ['Pollachi','Mettupalayam','Sulur','Annur','Kinathukadavu'],
+    'Madurai':     ['Melur','Usilampatti','Thirumangalam','Vadipatti','Peraiyur'],
+    'Salem':       ['Attur','Mettur','Omalur','Sangagiri','Vazhapadi']
+  },
+  'Uttar Pradesh': {
+    'Lucknow':     ['Bakshi Ka Talab','Malihabad','Mohanlalganj','Sarojini Nagar','Kakori'],
+    'Varanasi':    ['Pindra','Rajatalab','Arajiline','Cholapur','Kashi Vidyapeeth'],
+    'Kanpur':      ['Bilhaur','Ghatampur','Bhognipur','Derapur','Rasulabad'],
+    'Agra':        ['Etmadpur','Fatehabad','Kiraoli','Kheragarh','Bah']
+  },
+  'Punjab': {
+    'Ludhiana':    ['Khanna','Jagraon','Samrala','Raikot','Payal'],
+    'Amritsar':    ['Ajnala','Attari','Baba Bakala','Majitha','Rayya'],
+    'Patiala':     ['Rajpura','Nabha','Samana','Patran','Bhunerheri'],
+    'Jalandhar':   ['Nakodar','Phillaur','Shahkot','Adampur','Bhogpur']
+  },
+  'Gujarat': {
+    'Ahmedabad':   ['Daskroi','Dholka','Sanand','Viramgam','Bavla'],
+    'Surat':       ['Choryasi','Olpad','Mangrol','Mandvi','Bardoli'],
+    'Vadodara':    ['Padra','Savli','Karjan','Dabhoi','Sinor'],
+    'Rajkot':      ['Gondal','Jetpur','Dhoraji','Kotda Sangani','Jasdan']
+  }
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let selectedLang = 'te';
+let selectedLocation = {
+  village: 'Gajwel',
+  district: 'Siddipet',
+  state: 'Telangana',
+  fromGPS: false
+};
+
+/* ============================================================
+   HELPER: fill select
+   ============================================================ */
+function fillSelect(selectEl, values, placeholder){
+  selectEl.innerHTML = '';
+  if(placeholder){
+    const opt = document.createElement('option');
+    opt.value = ''; opt.textContent = placeholder;
+    opt.disabled = true; opt.selected = true;
+    selectEl.appendChild(opt);
+  }
+  values.forEach(v=>{
+    const opt = document.createElement('option');
+    opt.value = v; opt.textContent = v;
+    selectEl.appendChild(opt);
+  });
+}
+
+function onStateChange(){
+  const state = document.getElementById('stateSel').value;
+  const districts = Object.keys(LOCATION_DATA[state] || {});
+  fillSelect(document.getElementById('districtSel'), districts, '—');
+  if(districts.length){
+    document.getElementById('districtSel').value = districts[0];
+    onDistrictChange();
+  }
+}
+
+function onDistrictChange(){
+  const state = document.getElementById('stateSel').value;
+  const district = document.getElementById('districtSel').value;
+  const villages = (LOCATION_DATA[state] && LOCATION_DATA[state][district]) || [];
+  fillSelect(document.getElementById('villageSel'), villages, '—');
+  if(villages.length){
+    document.getElementById('villageSel').value = villages[0];
+  }
+}
+
+function initLocationDropdowns(){
+  const stateSel = document.getElementById('stateSel');
+  fillSelect(stateSel, Object.keys(LOCATION_DATA));
+  stateSel.value = 'Telangana';
+  onStateChange();
+}
+
+window.onStateChange = onStateChange;
+window.onDistrictChange = onDistrictChange;
+
+/* ============================================================
+   VOICE
+   ============================================================ */
+const SPEECH_LANG = { te:'te-IN', hi:'hi-IN', en:'en-IN' };
+
+function speak(text, lang){
+  if(!voiceEnabled) return;
+  if(!('speechSynthesis' in window)){
+    console.log('[voice] ' + text);
+    return;
+  }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = SPEECH_LANG[lang] || 'en-IN';
+  u.rate = 0.92;
+  u.pitch = 1.05;
+
+  const voices = speechSynthesis.getVoices();
+  const match = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(lang));
+  if(match) u.voice = match;
+
+  const btn = document.getElementById('voiceToggle');
+  u.onstart = ()=>{ voicePlaying = true; btn.classList.add('speaking'); };
+  u.onend = ()=>{ voicePlaying = false; btn.classList.remove('speaking'); };
+  u.onerror = ()=>{ voicePlaying = false; btn.classList.remove('speaking'); };
+  speechSynthesis.speak(u);
+}
+
+function toggleVoice(){
+  voiceEnabled = !voiceEnabled;
+  const btn = document.getElementById('voiceToggle');
+  btn.classList.toggle('muted', !voiceEnabled);
+  btn.textContent = voiceEnabled ? '🔊' : '🔇';
+  if(!voiceEnabled && 'speechSynthesis' in window){
+    speechSynthesis.cancel();
+  } else {
+    speakAuto(currentIdx);
+  }
+}
+window.toggleVoice = toggleVoice;
+
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = ()=>{};
+  speechSynthesis.getVoices();
+}
+
+/* ============================================================
+   AUTO-VOICE on page change
+   ============================================================ */
+let lastSpokenPage = -1;
+function speakAuto(idx){
+  if(!voiceEnabled) return;
+  if(idx === lastSpokenPage) return;
+  lastSpokenPage = idx;
+  const s = VOICE_SCRIPTS[idx];
+  if(!s) return;
+  setTimeout(()=> speak(s[selectedLang], selectedLang), 500);
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function jumpTo(idx){
+  idx = Math.max(0, Math.min(TOTAL - 1, idx));
+  pages[idx].scrollIntoView({behavior:'smooth', block:'start'});
+  /* auto-speak happens via IntersectionObserver */
+}
+window.jumpTo = jumpTo;
+
+function nextPage(){ jumpTo(currentIdx + 1); }
+function prevPage(){ jumpTo(currentIdx - 1); }
+window.nextPage = nextPage;
+window.prevPage = prevPage;
+
+/* Build top nav tabs */
+function buildTopNav(){
+  const nav = document.getElementById('topNav');
+  nav.innerHTML = '';
+  const items = NAV_ITEMS[selectedLang];
+  items.forEach((item, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'nav-tab';
+    btn.dataset.idx = i;
+    btn.innerHTML = `<span class="icn">${item.icon}</span><span>${item.label}</span>`;
+    btn.onclick = () => jumpTo(i);
+    nav.appendChild(btn);
+  });
+  updateActiveTab();
+}
+
+function updateActiveTab(){
+  document.querySelectorAll('.nav-tab').forEach(t=>{
+    t.classList.toggle('active', parseInt(t.dataset.idx) === currentIdx);
+  });
+}
+
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting && entry.intersectionRatio > 0.5){
+      const idx = pages.indexOf(entry.target);
+      if(idx !== currentIdx){
+        currentIdx = idx;
+        updateActiveTab();
+      }
+      const pageEl = entry.target;
+      if(!pageEl.classList.contains('in')){
+        pageEl.classList.add('turn-in');
+        setTimeout(()=> pageEl.classList.remove('turn-in'), 1200);
+      }
+      pageEl.classList.add('in');
+      playAnimations(pageEl);
+      /* auto-speak */
+      speakAuto(idx);
+    }
+  });
+}, { threshold:[0.5, 0.7] });
+
+pages.forEach(p => observer.observe(p));
+
+const animatedPages = new WeakSet();
+function playAnimations(page){
+  if(animatedPages.has(page)) return;
+  animatedPages.add(page);
+
+  page.querySelectorAll('[data-count]').forEach(el=>{
+    const target = parseFloat(el.dataset.count);
+    const dec = el.dataset.dec ? parseInt(el.dataset.dec) : 0;
+    const dur = 1300;
+    const start = performance.now();
+    function tick(now){
+      const p = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = (target * eased).toFixed(dec);
+      if(p < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toFixed(dec);
+    }
+    requestAnimationFrame(tick);
+  });
+
+  setTimeout(()=>{
+    page.querySelectorAll('.bar i[data-w]').forEach(b => b.style.width = b.dataset.w);
+    page.querySelectorAll('.fc-bar i[data-w]').forEach(b => b.style.width = b.dataset.w);
+    page.querySelectorAll('.chart .bar-v').forEach(b => {
+      if(!page.id.includes('reports')) b.style.height = b.dataset.h;
+    });
+    const ring = page.querySelector('#dashRing');
+    if(ring) ring.style.strokeDashoffset = 327 * (1 - 0.72);
+  }, 300);
+}
+
+/* ============================================================
+   TRANSLATIONS APPLY
+   ============================================================ */
+function applyTranslations(){
+  const tr = T[selectedLang];
+
+  /* All elements with class .i18n get translation by data-k */
+  document.querySelectorAll('.i18n').forEach(el=>{
+    const k = el.dataset.k;
+    const val = tr[k] || (BASE_WORDS[selectedLang] && BASE_WORDS[selectedLang][k]);
+    if(val) el.textContent = val;
+  });
+
+  /* Day names */
+  document.querySelectorAll('[data-day]').forEach(el=>{
+    const d = el.dataset.day;
+    if(DAYS[selectedLang][d]) el.textContent = DAYS[selectedLang][d];
+  });
+
+  /* Profile page */
+  document.getElementById('profStepTag').textContent = tr.profStepTag;
+  document.getElementById('profTitle').innerHTML = tr.profTitle;
+  document.getElementById('profSub').textContent = tr.profSub;
+  document.getElementById('profLangLbl').textContent = tr.profLangLbl;
+  document.getElementById('lblName').textContent = tr.lblName;
+  document.getElementById('lblPhone').textContent = tr.lblPhone;
+  document.getElementById('startBtn').innerHTML = tr.startBtn;
+
+  /* Location */
+  document.getElementById('locStepTag').textContent = tr.locStepTag;
+  document.getElementById('locTitle').innerHTML = tr.locTitle;
+  document.getElementById('locSub').textContent = tr.locSub;
+  document.getElementById('gpsBtnTxt').textContent = tr.gpsBtnTxt;
+  document.getElementById('orDiv').textContent = tr.orDiv;
+  document.getElementById('lblState').textContent = tr.lblState;
+  document.getElementById('lblDistrict').textContent = tr.lblDistrict;
+  document.getElementById('lblVillage').textContent = tr.lblVillage;
+  document.getElementById('confirmBtn').innerHTML = tr.confirmBtn;
+
+  /* Dashboard */
+  document.getElementById('dashTag').textContent = tr.dashTag;
+  document.getElementById('todayLbl').textContent = tr.todayLbl;
+  document.getElementById('dashDesc').textContent = tr.dashDesc;
+
+  /* Weather */
+  document.getElementById('wTag').textContent = tr.wTag;
+  document.getElementById('wTitle').innerHTML = tr.wTitle;
+  document.getElementById('wSub').textContent = tr.wSub;
+  document.getElementById('wCond').textContent = tr.wCond;
+  document.getElementById('wRange').textContent = tr.wRange;
+  document.getElementById('wUpdated').textContent = tr.wUpdated;
+  document.getElementById('wAQ').textContent = tr.wAQ;
+  document.getElementById('hNext').textContent = tr.hNext;
+  document.getElementById('hDetails').textContent = tr.hDetails;
+  document.getElementById('uvLbl').textContent = tr.uvLbl;
+
+  /* Forecast */
+  document.getElementById('fTag').textContent = tr.fTag;
+  document.getElementById('fTitle').innerHTML = tr.fTitle;
+  document.getElementById('fSub').textContent = tr.fSub;
+  document.getElementById('fcChartT').textContent = tr.fcChartT;
+  document.getElementById('fcChartS').textContent = tr.fcChartS;
+
+  /* AI Guard */
+  document.getElementById('guardTag').textContent = tr.guardTag;
+  document.getElementById('guardH').innerHTML = tr.guardH;
+  document.getElementById('guardP').textContent = tr.guardP;
+  document.getElementById('guardIntroBadge').textContent = tr.guardIntroBadge;
+  document.getElementById('guardIntroMsg').textContent = tr.guardIntroMsg;
+
+  /* Alerts */
+  document.getElementById('aTag').textContent = tr.aTag;
+  document.getElementById('aTitle').innerHTML = tr.aTitle;
+  document.getElementById('aSub').textContent = tr.aSub;
+
+  /* Advisory */
+  document.getElementById('advTag').textContent = tr.advTag;
+  document.getElementById('advTitle').innerHTML = tr.advTitle;
+  document.getElementById('advSub').textContent = tr.advSub;
+
+  /* Panchayat */
+  document.getElementById('pTag').textContent = tr.pTag;
+  document.getElementById('pTitle').innerHTML = tr.pTitle;
+  document.getElementById('pSub').textContent = tr.pSub;
+  document.getElementById('vWxT').textContent = tr.vWxT;
+
+  /* Reports */
+  document.getElementById('rTag').textContent = tr.rTag;
+  document.getElementById('rTitle').innerHTML = tr.rTitle;
+  document.getElementById('rSub').textContent = tr.rSub;
+  document.getElementById('rChartT').textContent = tr.rChartT;
+  document.getElementById('rChartS').textContent = tr.rChartS;
+  document.getElementById('startOverBtn').innerHTML = `🏠 ${tr.startOver}`;
+
+  /* Greeting */
+  updateGreeting();
+
+  /* Rebuild guard grid */
+  buildGuardGrid();
+}
+
+/* ============================================================
+   AI GUARD GRID
+   ============================================================ */
+function buildGuardGrid(){
+  const grid = document.getElementById('guardGrid');
+  if(!grid) return;
+  const data = GUARD_DATA[selectedLang];
+  grid.innerHTML = '';
+  data.forEach((item, i)=>{
+    const card = document.createElement('div');
+    card.className = 'guard-card sev-' + item.sev;
+    card.innerHTML = `
+      <div class="guard-head">
+        <div class="guard-day">
+          <div class="dw">${DAYS[selectedLang][item.day]}</div>
+          <div class="dn">${i+1}</div>
+        </div>
+        <div class="guard-risk">
+          <span class="em">${item.em}</span>
+          <span class="txt">${item.title}</span>
+        </div>
+      </div>
+      <div class="guard-msg">${item.msg}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/* ============================================================
+   INITIAL DROPDOWNS
+   ============================================================ */
+function initLocationDropdownsOnce(){
+  const stateSel = document.getElementById('stateSel');
+  if(stateSel.options.length) return;
+  fillSelect(stateSel, Object.keys(LOCATION_DATA));
+  stateSel.value = 'Telangana';
+  onStateChange();
+}
+
+/* ============================================================
+   PROFILE SETUP
+   ============================================================ */
+function startSetup(){
+  const nameInput = document.getElementById('profName');
+  userName = (nameInput.value || '').trim() || 'రైతు';
+  /* speak welcome */
+  const welcome = {
+    te:`స్వాగతం ${userName}. మీ స్థానాన్ని కనుగొనండి.`,
+    hi:`स्वागत है ${userName}. अपना स्थान खोजें.`,
+    en:`Welcome ${userName}. Find your location.`
+  }[selectedLang];
+  speak(welcome, selectedLang);
+  showToast('✅ ' + userName);
+  jumpTo(1);
+}
+window.startSetup = startSetup;
+
+/* language selection inside profile */
+document.querySelectorAll('#langGridInline .lang-card-inline').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    document.querySelectorAll('#langGridInline .lang-card-inline').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    selectedLang = card.dataset.lang;
+    applyTranslations();
+    buildTopNav();
+    updateGreeting();
+    /* speak the profile intro in new language */
+    speak(VOICE_SCRIPTS[0][selectedLang], selectedLang);
+    showToast('✅ ' + ({te:'తెలుగు', hi:'हिन्दी', en:'English'})[selectedLang]);
+  });
+});
+
+/* ============================================================
+   GPS LOCATION with pin drop
+   ============================================================ */
+function detectLocation(){
+  const btn = document.getElementById('gpsBtn');
+  const btnTxt = document.getElementById('gpsBtnTxt');
+  const scene = document.getElementById('gpsScene');
+  const label = document.getElementById('gpsLabel');
+  const tr = T[selectedLang];
+
+  btn.disabled = true;
+  scene.classList.remove('found');
+  scene.classList.add('searching');
+  label.textContent = '';
+
+  btnTxt.textContent = tr.gpsSearching;
+  setTimeout(()=> btnTxt.textContent = tr.gpsReading, 700);
+  setTimeout(()=> btnTxt.textContent = tr.gpsMatching, 1400);
+
+  setTimeout(()=>{
+    scene.classList.remove('searching');
+    scene.classList.add('found');
+
+    const GPS_DEMO = [
+      { state:'Telangana', district:'Siddipet', village:'Gajwel' },
+      { state:'Telangana', district:'Hyderabad', village:'Kukatpally' },
+      { state:'Telangana', district:'Nizamabad', village:'Bodhan' },
+      { state:'Telangana', district:'Karimnagar', village:'Huzurabad' },
+      { state:'Telangana', district:'Medak', village:'Toopran' },
+      { state:'Telangana', district:'Sircilla', village:'Vemulawada' },
+      { state:'Maharashtra', district:'Nashik', village:'Pimpalgaon Basvant' },
+      { state:'Maharashtra', district:'Pune', village:'Baramati' },
+      { state:'Karnataka', district:'Bangalore', village:'Devanahalli' },
+      { state:'Tamil Nadu', district:'Coimbatore', village:'Pollachi' }
+    ];
+    const pick = GPS_DEMO[Math.floor(Math.random() * GPS_DEMO.length)];
+
+    selectedLocation = {
+      village: pick.village, district: pick.district, state: pick.state, fromGPS: true
+    };
+
+    /* update dropdowns */
+    const sSel = document.getElementById('stateSel');
+    const dSel = document.getElementById('districtSel');
+    const vSel = document.getElementById('villageSel');
+    sSel.value = pick.state;
+    onStateChange();
+    dSel.value = pick.district;
+    onDistrictChange();
+    vSel.value = pick.village;
+
+    label.textContent = `📍 ${pick.village}, ${pick.district}`;
+    btnTxt.textContent = tr.gpsFound;
+    btn.disabled = false;
+
+    updateGreeting();
+
+    const found = {
+      te:`స్థానం కనుగొనబడింది: ${pick.village}`,
+      hi:`स्थान मिला: ${pick.village}`,
+      en:`Location found: ${pick.village}`
+    }[selectedLang];
+    speak(found, selectedLang);
+  }, 2200);
+}
+window.detectLocation = detectLocation;
+
+function confirmLocation(){
+  selectedLocation.village = document.getElementById('villageSel').value;
+  selectedLocation.district = document.getElementById('districtSel').value;
+  selectedLocation.state = document.getElementById('stateSel').value;
+  updateGreeting();
+  const msg = {
+    te:`స్థానం సేవ్ చేయబడింది: ${selectedLocation.village}`,
+    hi:`स्थान सहेजा गया: ${selectedLocation.village}`,
+    en:`Location saved: ${selectedLocation.village}`
+  }[selectedLang];
+  showToast('✅ ' + msg);
+  jumpTo(2);
+}
+window.confirmLocation = confirmLocation;
+
+/* ============================================================
+   UPDATE GREETING
+   ============================================================ */
+function updateGreeting(){
+  const g = GREETINGS[selectedLang];
+  const hour = new Date().getHours();
+  const timeGreet = hour < 12 ? '🌅' : hour < 17 ? '☀️' : '🌙';
+
+  const greetEl = document.getElementById('greeting');
+  if(greetEl){
+    greetEl.innerHTML = `${timeGreet} ${g.hello}, <span class="grad">${userName}</span> 👋`;
+  }
+
+  const locEl = document.getElementById('locationLine');
+  if(locEl){
+    locEl.textContent = `📍 ${selectedLocation.village} · ${selectedLocation.district} · ${selectedLocation.state}`;
+  }
+}
+
+/* ============================================================
+   TOAST + RIPPLE
+   ============================================================ */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=> t.classList.remove('show'), 2400);
+}
+window.showToast = showToast;
+
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.btn');
+  if(!btn) return;
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top  = (e.clientY - rect.top  - size/2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(()=> ripple.remove(), 700);
+});
+
+/* ============================================================
+   KEYBOARD
+   ============================================================ */
+document.addEventListener('keydown', e=>{
+  if(e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+  if(e.key === 'ArrowDown' || e.key === 'PageDown'){ e.preventDefault(); nextPage(); }
+  if(e.key === 'ArrowUp'   || e.key === 'PageUp'){   e.preventDefault(); prevPage(); }
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', ()=>{
+  initLocationDropdownsOnce();
+  applyTranslations();
+  buildTopNav();
+  updateGreeting();
+
+  pages[0].classList.add('turn-in');
+  pages[0].classList.add('in');
+  setTimeout(()=> pages[0].classList.remove('turn-in'), 1200);
+
+  setTimeout(()=> document.getElementById('splash').classList.add('hide'), 900);
+
+  /* speak the profile page after splash */
+  setTimeout(()=> speakAuto(0), 1600);
+});
+</script>
+</body>
+</html>
